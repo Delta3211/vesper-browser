@@ -12,6 +12,39 @@
 
 A minimalist, privacy-focused browser interface built with React, TypeScript, and Tailwind CSS.
 
+## 📸 Sneak Peek & Screenshots
+
+Take a visual tour of Vesper before downloading:
+
+### 1. Cinematic Onboarding & Interactive First-Run Setup
+> The moment you launch Vesper, a 60fps Three.js cinematic setup guides you through configuring your search engine, theme preferences, and privacy shields.
+
+<p align="center">
+  <img src="docs/screenshots/01_welcome_setup.png" width="100%" alt="Vesper Welcome Screen" style="border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.5);" />
+</p>
+
+<p align="center">
+  <img src="docs/screenshots/02_search_engine_setup.png" width="49%" alt="Search Engine Setup" style="border-radius: 8px;" />
+  <img src="docs/screenshots/03_theme_customization.png" width="49%" alt="Theme Customization" style="border-radius: 8px;" />
+</p>
+
+### 2. Built-in Privacy Shield & Advanced Preferences
+> Built with zero telemetry, local-first data storage, ad & tracker blocking, and a graphite settings console.
+
+<p align="center">
+  <img src="docs/screenshots/04_privacy_shield_setup.png" width="49%" alt="Privacy Shield Setup" style="border-radius: 8px;" />
+  <img src="docs/screenshots/05_browser_settings.png" width="49%" alt="Settings & Preferences" style="border-radius: 8px;" />
+</p>
+
+### 3. Desktop Viewport & Workspaces
+> Vertical tab workspaces, split-screen multi-tasking, and ambient obsidian purple accents.
+
+<p align="center">
+  <img src="docs/screenshots/06_browser_viewport.png" width="100%" alt="Browser Viewport" style="border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.5);" />
+</p>
+
+---
+
 ## Features
 
 - **Modern UI**: Clean, dark graphite interface with purple accents
