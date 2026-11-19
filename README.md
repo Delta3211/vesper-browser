@@ -34,7 +34,7 @@ A minimalist, privacy-focused browser interface built with React, TypeScript, an
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/vesper-browser.git
+git clone https://github.com/Delta3211/vesper-browser.git
 cd vesper-browser
 
 # Install dependencies
