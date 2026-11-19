@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ArrowLeft, ArrowRight, RotateCw, Star, MoreHorizontal, Minus, Square, X } from 'lucide-react';
 import { useBrowserStore } from '../../store/browserStore';
 import { minimizeWindow, toggleMaximizeWindow, closeWindow, getPlatform } from '../../lib/electronBridge';
 
@@ -9,9 +8,9 @@ export const WindowFrame: React.FC = () => {
     omnibarInput, isOmnibarFocused,
     setIsOmnibarFocused,
     navigateTab, goBack, goForward, reloadTab, stopTab,
-    createTab, setCommandPaletteOpen, commandPaletteOpen,
+    createTab,
     setDownloadsDrawerOpen, downloadsDrawerOpen,
-    toggleBookmark, bookmarks, history, settings,
+    toggleSidebar, history, bookmarks, settings,
   } = useBrowserStore();
 
   const [editing, setEditing] = useState(false);
@@ -34,7 +33,7 @@ export const WindowFrame: React.FC = () => {
       setLocalInput(activeTab?.url?.startsWith('vesper://') ? '' : (activeTab?.url ?? ''));
       setTimeout(() => { inputRef.current?.focus(); inputRef.current?.select(); }, 0);
     }
-  }, [isOmnibarFocused]);
+  }, [isOmnibarFocused, activeTab]);
 
   const go = (value: string) => {
     if (!value.trim()) return;
@@ -73,7 +72,6 @@ export const WindowFrame: React.FC = () => {
     }
   };
 
-  // Protocol details
   const suggestions = (() => {
     const q = localInput.trim().toLowerCase();
     if (!editing || q.length < 1) return [];
@@ -99,105 +97,90 @@ export const WindowFrame: React.FC = () => {
     return merged.slice(0, 8);
   })();
 
-  const proto = (() => {
-    const url = activeTab?.url ?? '';
-    if (url.startsWith('vesper://')) return { icon: '✦', iconColor: '#ff506f', prefix: 'vesper://', prefixColor: '#7c768d', domain: url.replace('vesper://', ''), domainColor: '#f1eff5', path: '' };
-    if (url.startsWith('https://')) {
-      try {
-        const u = new URL(url);
-        return { icon: '🔒', iconColor: '#22c55e', prefix: 'https://', prefixColor: '#7c768d', domain: u.hostname.replace('www.', ''), domainColor: '#e2dfe8', path: u.pathname === '/' ? '' : u.pathname };
-      } catch {}
-    }
-    if (url.startsWith('http://')) {
-      try {
-        const u = new URL(url);
-        return { icon: '⚠', iconColor: '#f59e0b', prefix: 'http://', prefixColor: '#7c768d', domain: u.hostname.replace('www.', ''), domainColor: '#e2dfe8', path: u.pathname === '/' ? '' : u.pathname };
-      } catch {}
-    }
-    return { icon: '🌐', iconColor: '#9a94a8', prefix: '', prefixColor: '#7c768d', domain: url, domainColor: '#e2dfe8', path: '' };
-  })();
+  const displayUrl = activeTab?.url || 'vesper://newtab';
 
   return (
     <header
-      className="fixed top-0 left-0 right-0 h-[50px] z-50 flex items-center justify-between px-4 select-none text-[13px] animate-slide-down"
-      style={{ backgroundColor: '#14121a', borderBottom: '1px solid #252132', WebkitAppRegion: 'drag' } as React.CSSProperties}
+      className="fixed top-0 left-0 right-0 h-10 border-b border-[#1b1c22] flex items-center justify-between px-4 z-30 bg-[#16171d] select-none text-xs"
+      style={{ WebkitAppRegion: 'drag' } as React.CSSProperties}
     >
-      {/* LEFT: window controls + nav */}
-      <div className="flex items-center gap-2 shrink-0" style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}>
+      {/* Browser History & Tab Toggle Controls */}
+      <div className="flex items-center space-x-1.5 text-gray-400 shrink-0" style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}>
         {isMac ? (
           <div className="flex items-center gap-1.5 mr-2">
-            <button onClick={closeWindow} className="w-3 h-3 rounded-full transition-opacity hover:opacity-70" style={{ backgroundColor: '#ff5f56' }} title="Close" />
-            <button onClick={minimizeWindow} className="w-3 h-3 rounded-full transition-opacity hover:opacity-70" style={{ backgroundColor: '#ffbd2e' }} title="Minimize" />
-            <button onClick={() => toggleMaximizeWindow().then(m => setIsMaximized(m))} className="w-3 h-3 rounded-full transition-opacity hover:opacity-70" style={{ backgroundColor: '#27c93f' }} title="Zoom" />
+            <button onClick={closeWindow} className="w-3 h-3 rounded-full transition-opacity hover:opacity-70 cursor-pointer" style={{ backgroundColor: '#ff5f56' }} title="Close" />
+            <button onClick={minimizeWindow} className="w-3 h-3 rounded-full transition-opacity hover:opacity-70 cursor-pointer" style={{ backgroundColor: '#ffbd2e' }} title="Minimize" />
+            <button onClick={() => toggleMaximizeWindow().then(m => setIsMaximized(m))} className="w-3 h-3 rounded-full transition-opacity hover:opacity-70 cursor-pointer" style={{ backgroundColor: '#27c93f' }} title="Zoom" />
           </div>
         ) : null}
 
-        {/* Separator */}
-        <div className="w-px h-4 mx-1" style={{ backgroundColor: '#292535' }} />
+        {/* Sidebar Toggle Icon */}
+        <button
+          onClick={toggleSidebar}
+          className="hover:text-gray-200 hover:bg-white/5 transition-all p-1.5 rounded active:scale-95 cursor-pointer"
+          title="Toggle sidebar"
+          type="button"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <rect height="16" rx="2" strokeWidth="1.8" width="18" x="3" y="4" />
+            <path d="M9 4v16" strokeWidth="1.8" />
+          </svg>
+        </button>
 
-        {/* Nav buttons */}
-        <div className="flex items-center gap-0.5" style={{ color: '#9a94a8' }}>
-          <button
-            onClick={() => goBack(currentTabId)}
-            disabled={!activeTab?.canGoBack}
-            className="w-7 h-7 flex items-center justify-center rounded transition-colors"
-            style={{ color: activeTab?.canGoBack ? '#9a94a8' : '#3a3545' }}
-            onMouseEnter={e => { if (activeTab?.canGoBack) { (e.currentTarget as HTMLElement).style.backgroundColor = '#201d2a'; (e.currentTarget as HTMLElement).style.color = 'white'; }}}
-            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent'; (e.currentTarget as HTMLElement).style.color = activeTab?.canGoBack ? '#9a94a8' : '#3a3545'; }}
-            title="Back"
-          >
-            <ArrowLeft className="w-4 h-4" />
-          </button>
-          <button
-            onClick={() => goForward(currentTabId)}
-            disabled={!activeTab?.canGoForward}
-            className="w-7 h-7 flex items-center justify-center rounded transition-colors"
-            style={{ color: activeTab?.canGoForward ? '#9a94a8' : '#3a3545' }}
-            onMouseEnter={e => { if (activeTab?.canGoForward) { (e.currentTarget as HTMLElement).style.backgroundColor = '#201d2a'; (e.currentTarget as HTMLElement).style.color = 'white'; }}}
-            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent'; (e.currentTarget as HTMLElement).style.color = activeTab?.canGoForward ? '#9a94a8' : '#3a3545'; }}
-            title="Forward"
-          >
-            <ArrowRight className="w-4 h-4" />
-          </button>
-          <button
-            onClick={() => activeTab?.isLoading ? stopTab(currentTabId) : reloadTab(currentTabId)}
-            className="w-7 h-7 flex items-center justify-center rounded transition-colors"
-            style={{ color: '#9a94a8' }}
-            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.backgroundColor = '#201d2a'; (e.currentTarget as HTMLElement).style.color = 'white'; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent'; (e.currentTarget as HTMLElement).style.color = '#9a94a8'; }}
-            title={activeTab?.isLoading ? 'Stop' : 'Reload'}
-          >
-            {activeTab?.isLoading ? (
-              <X className="w-4 h-4" />
-            ) : (
-              <RotateCw className="w-4 h-4" />
-            )}
-          </button>
-        </div>
+        {/* Back Button */}
+        <button
+          onClick={() => goBack(currentTabId)}
+          disabled={!activeTab?.canGoBack}
+          className="hover:text-gray-200 hover:bg-white/5 transition-all p-1.5 rounded active:scale-95 disabled:opacity-40 cursor-pointer disabled:cursor-default"
+          title="Back"
+          type="button"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path d="M15 19l-7-7 7-7" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
+          </svg>
+        </button>
+
+        {/* Forward Button */}
+        <button
+          onClick={() => goForward(currentTabId)}
+          disabled={!activeTab?.canGoForward}
+          className="hover:text-gray-200 hover:bg-white/5 transition-all p-1.5 rounded active:scale-95 disabled:opacity-40 cursor-pointer disabled:cursor-default"
+          title="Forward"
+          type="button"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path d="M9 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
+          </svg>
+        </button>
+
+        {/* Reload Button */}
+        <button
+          onClick={() => activeTab?.isLoading ? stopTab(currentTabId) : reloadTab(currentTabId)}
+          className="hover:text-gray-200 hover:bg-white/5 transition-all p-1.5 rounded active:scale-95 group cursor-pointer"
+          title={activeTab?.isLoading ? 'Stop' : 'Reload'}
+          type="button"
+        >
+          <svg className="w-3.5 h-3.5 transition-transform duration-500 group-hover:rotate-180 group-active:rotate-360" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
+          </svg>
+        </button>
       </div>
 
-      {/* CENTER: Omnibox */}
-      <div className="flex-1 max-w-[620px] mx-4 relative" style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}>
-        <form onSubmit={submit}>
+      {/* Central Omnibox */}
+      <div className="flex-1 max-w-lg mx-4 flex items-center justify-center relative" style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}>
+        <form onSubmit={submit} className="w-full">
           <div
-            className="h-7 w-full px-2.5 rounded-md flex items-center justify-between cursor-text transition-colors"
-            style={{
-              backgroundColor: editing ? '#13151a' : '#1c1a24',
-              border: editing ? '1px solid #8b5cf6' : '1px solid #2b2738',
-              boxShadow: editing ? '0 0 0 1px #8b5cf6, 0 0 12px rgba(139,92,246,0.15)' : 'none',
-            }}
+            className="w-full h-7 bg-[#14151b] hover:bg-[#1a1b22] border border-[#262832] hover:border-purple-500/30 rounded-lg px-2.5 flex items-center justify-between text-xs text-gray-300 transition-colors cursor-text group"
             onClick={() => { if (!editing) { onFocus(); inputRef.current?.focus(); }}}
           >
-            <div className="flex items-center gap-1.5 flex-1 min-w-0 overflow-hidden">
-              {!editing && (
-                <span className="text-[13px] shrink-0" style={{ color: proto.iconColor }}>{proto.icon}</span>
-              )}
+            <div className="flex items-center space-x-2 truncate flex-1 min-w-0">
+              <svg className="w-3.5 h-3.5 text-purple-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" />
+              </svg>
               {!editing ? (
-                <div className="flex items-center text-[12px] truncate">
-                  <span style={{ color: proto.prefixColor }}>{proto.prefix}</span>
-                  <span className="font-medium" style={{ color: proto.domainColor }}>{proto.domain}</span>
-                  {proto.path && <span style={{ color: proto.prefixColor }}>{proto.path.length > 30 ? proto.path.slice(0, 30) + '…' : proto.path}</span>}
-                </div>
+                <span className="text-[12px] font-mono text-purple-300 select-all truncate">
+                  {displayUrl}
+                </span>
               ) : (
                 <input
                   ref={inputRef}
@@ -208,114 +191,101 @@ export const WindowFrame: React.FC = () => {
                   onBlur={onBlur}
                   onKeyDown={onKeyDown}
                   placeholder="Search or enter address..."
-                  className="w-full bg-transparent border-none outline-none text-[12px] font-mono"
-                  style={{ color: '#e2dfe8' }}
+                  className="w-full bg-transparent border-none outline-none text-[12px] font-mono text-purple-200 placeholder-gray-500 p-0 focus:ring-0"
                   spellCheck={false}
                   autoComplete="off"
                 />
               )}
             </div>
+
             {!editing && (
-              <div className="flex items-center gap-1 shrink-0" style={{ color: '#8b8599' }}>
-                <button
-                  type="button"
-                  onClick={e => {
-                    e.stopPropagation();
-                    if (activeTab) toggleBookmark(activeTab.url, activeTab.title);
-                  }}
-                  className="w-5 h-5 flex items-center justify-center rounded hover:text-white transition-colors"
-                  title={activeTab && bookmarks.some(b => b.url === activeTab.url) ? 'Remove bookmark (Ctrl+D)' : 'Bookmark this page (Ctrl+D)'}
-                >
-                  <Star
-                    className="w-3.5 h-3.5"
-                    fill={activeTab && bookmarks.some(b => b.url === activeTab.url) ? '#fbbf24' : 'none'}
-                    color={activeTab && bookmarks.some(b => b.url === activeTab.url) ? '#fbbf24' : 'currentColor'}
-                  />
-                </button>
-                <span className="text-[10px] px-1.5 py-0.5 rounded font-mono" style={{ backgroundColor: '#292537', color: '#a09bb0', border: '1px solid #373249' }}>Ctrl+K</span>
+              <div className="flex items-center space-x-1.5 text-gray-500 shrink-0">
+                <span className="text-[10px] font-mono px-1 rounded bg-[#20212b] border border-white/5 opacity-70 group-hover:opacity-100">
+                  Ctrl+L
+                </span>
               </div>
             )}
           </div>
         </form>
+
+        {/* Suggestions dropdown */}
         {editing && suggestions.length > 0 && (
           <div
-            className="absolute left-0 right-0 top-[34px] z-[80] rounded-lg overflow-hidden"
-            style={{ backgroundColor: '#16141f', border: '1px solid #2b2738', boxShadow: '0 16px 40px rgba(0,0,0,0.45)' }}
+            className="absolute left-0 right-0 top-[34px] z-[80] rounded-xl overflow-hidden bg-[#181920]/95 backdrop-blur-xl border border-purple-500/30 shadow-[0_20px_50px_rgba(0,0,0,0.7),0_0_30px_rgba(147,51,234,0.18)]"
           >
             {suggestions.map((item, idx) => (
               <button
                 key={item.id}
                 type="button"
                 onMouseDown={e => { e.preventDefault(); go(item.url); }}
-                className="w-full flex items-center justify-between px-3 py-2 text-left"
-                style={{ backgroundColor: idx === suggestionIndex ? '#221c32' : 'transparent' }}
+                className={`w-full flex items-center justify-between px-3 py-2 text-left cursor-pointer transition-colors ${
+                  idx === suggestionIndex ? 'bg-[#2d2542] text-white' : 'text-gray-300 hover:bg-white/5'
+                }`}
               >
-                <span className="truncate text-[12px]" style={{ color: '#e2dfe8' }}>{item.title}</span>
-                <span className="text-[10px] font-mono ml-2 shrink-0" style={{ color: '#6e6880' }}>{item.kind}</span>
+                <span className="truncate text-[12px]">{item.title}</span>
+                <span className="text-[10px] font-mono ml-2 shrink-0 text-purple-300">{item.kind}</span>
               </button>
             ))}
           </div>
         )}
       </div>
 
-      {/* RIGHT: utilities + Windows controls */}
-      <div className="flex items-center gap-1.5 shrink-0" style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}>
-        <button
-          onClick={() => setDownloadsDrawerOpen(!downloadsDrawerOpen)}
-          className="w-7 h-7 flex items-center justify-center rounded transition-colors"
-          style={{ color: '#9a94a8' }}
-          onMouseEnter={e => { (e.currentTarget as HTMLElement).style.backgroundColor = '#201d2a'; (e.currentTarget as HTMLElement).style.color = 'white'; }}
-          onMouseLeave={e => { (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent'; (e.currentTarget as HTMLElement).style.color = '#9a94a8'; }}
-          title="Downloads (Ctrl+J)"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
-          </svg>
-        </button>
+      {/* Right Action Icons & Window Action Buttons */}
+      <div className="flex items-center shrink-0">
+        {/* Header Downloads Button */}
+        <div className="flex items-center space-x-1 mr-2" style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}>
+          <button
+            onClick={() => setDownloadsDrawerOpen(!downloadsDrawerOpen)}
+            className="relative p-1.5 rounded-md text-white bg-purple-600/30 border border-purple-500/50 shadow-[0_0_15px_rgba(168,85,247,0.35)] transition-all active:scale-95 group cursor-pointer"
+            id="btn-header-downloads"
+            title="Downloads (Ctrl+J)"
+            type="button"
+          >
+            <svg className="w-4 h-4 text-purple-300 transition-transform group-hover:translate-y-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
+            </svg>
+            <span className="absolute -top-0.5 -right-0.5 flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500" />
+            </span>
+          </button>
+        </div>
 
-        <button
-          onClick={() => setCommandPaletteOpen(!commandPaletteOpen)}
-          className="w-7 h-7 flex items-center justify-center rounded transition-colors"
-          style={{ color: '#9a94a8' }}
-          onMouseEnter={e => { (e.currentTarget as HTMLElement).style.backgroundColor = '#201d2a'; (e.currentTarget as HTMLElement).style.color = 'white'; }}
-          onMouseLeave={e => { (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent'; (e.currentTarget as HTMLElement).style.color = '#9a94a8'; }}
-          title="Split View / Settings"
-        >
-          <MoreHorizontal className="w-4 h-4" />
-        </button>
-
-        {/* Windows controls for non-macOS */}
+        {/* Windows Native Window Action Buttons */}
         {!isMac && (
-          <div className="flex items-center gap-0.5 ml-1">
+          <div className="flex items-center h-10 -mr-4" style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}>
+            {/* Minimize */}
             <button
               onClick={minimizeWindow}
-              className="w-7 h-7 flex items-center justify-center rounded transition-colors"
-              style={{ color: '#9a94a8' }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.backgroundColor = '#201d2a'; (e.currentTarget as HTMLElement).style.color = 'white'; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent'; (e.currentTarget as HTMLElement).style.color = '#9a94a8'; }}
+              className="h-full px-3.5 hover:bg-white/10 text-gray-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
               title="Minimize"
+              type="button"
             >
-              <Minus className="w-3.5 h-3.5" />
+              <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 16 16">
+                <rect height="1" width="16" y="7" />
+              </svg>
             </button>
+            {/* Maximize / Restore */}
             <button
               onClick={() => toggleMaximizeWindow().then(m => setIsMaximized(m))}
-              className="w-7 h-7 flex items-center justify-center rounded transition-colors"
-              style={{ color: '#9a94a8' }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.backgroundColor = '#201d2a'; (e.currentTarget as HTMLElement).style.color = 'white'; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent'; (e.currentTarget as HTMLElement).style.color = '#9a94a8'; }}
+              className="h-full px-3.5 hover:bg-white/10 text-gray-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
               title={isMaximized ? 'Restore' : 'Maximize'}
+              type="button"
             >
-              <Square className="w-3 h-3" />
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 16 16">
+                <rect height="12" strokeWidth="1.2" width="12" x="2" y="2" />
+              </svg>
             </button>
+            {/* Close */}
             <button
               onClick={closeWindow}
-              className="w-7 h-7 flex items-center justify-center rounded transition-colors"
-              style={{ color: '#9a94a8' }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.backgroundColor = '#c0392b'; (e.currentTarget as HTMLElement).style.color = 'white'; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent'; (e.currentTarget as HTMLElement).style.color = '#9a94a8'; }}
+              className="h-full px-4 hover:bg-red-600 text-gray-400 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
               title="Close"
+              type="button"
             >
-              <X className="w-3.5 h-3.5" />
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 16 16">
+                <path d="M3 3l10 10M13 3L3 13" strokeLinecap="round" strokeWidth="1.2" />
+              </svg>
             </button>
           </div>
         )}
