@@ -1,8 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
 import * as THREE from 'three';
-import { ArrowRight, ArrowLeft, Check, Shield, Lock } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Check, Shield, Lock, Minus, Square, X } from 'lucide-react';
 import { useBrowserStore } from '../../store/browserStore';
-import { listImportBrowsers, scanImportBrowser, importBrowserBookmarks, importBrowserHistory, importBookmarksHtml } from '../../lib/electronBridge';
+import {
+  listImportBrowsers,
+  scanImportBrowser,
+  importBrowserBookmarks,
+  importBrowserHistory,
+  importBookmarksHtml,
+  minimizeWindow,
+  toggleMaximizeWindow,
+  closeWindow,
+} from '../../lib/electronBridge';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 type Screen = 'cinematic' | 'search' | 'import' | 'sync' | 'ready';
@@ -530,6 +539,19 @@ const CinematicReveal: React.FC<{ onEnter: () => void; onSkip: () => void }> = (
         ))}
       </div>
 
+      {/* Window Controls */}
+      <div className="absolute top-3 right-4 z-50 flex items-center gap-1" style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}>
+        <button onClick={() => void minimizeWindow()} title="Minimize" className="p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-white/10 transition-colors">
+          <Minus className="w-4 h-4" />
+        </button>
+        <button onClick={() => void toggleMaximizeWindow()} title="Maximize" className="p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-white/10 transition-colors">
+          <Square className="w-3.5 h-3.5" />
+        </button>
+        <button onClick={() => void closeWindow()} title="Close" className="p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-red-500/80 transition-colors">
+          <X className="w-4 h-4" />
+        </button>
+      </div>
+
       {/* Top telemetry bar */}
       <header className="hidden">
         <div className="flex items-center gap-3">
@@ -649,13 +671,13 @@ const SetupNav: React.FC<{ step: Screen }> = ({ step }) => {
   const idx = steps.findIndex(s => s.id === step);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 h-20 flex items-center justify-between px-8" style={{ backgroundColor: 'rgba(11,9,17,0.62)', borderBottom: '1px solid rgba(167,139,250,0.16)', backdropFilter: 'blur(18px)' }}>
-      <div className="flex items-center gap-4">
+    <header className="fixed top-0 left-0 right-0 z-50 h-20 flex items-center justify-between px-8" style={{ backgroundColor: 'rgba(11,9,17,0.62)', borderBottom: '1px solid rgba(167,139,250,0.16)', backdropFilter: 'blur(18px)', WebkitAppRegion: 'drag' } as React.CSSProperties}>
+      <div className="flex items-center gap-4" style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}>
         <img src="./vesper-logo.png" alt="Vesper" className="w-10 h-10 rounded-lg" />
         <span className="text-[16px] font-bold" style={{ color: '#f1eff5', fontFamily: 'system-ui, -apple-system, sans-serif' }}>Vesper</span>
         <span className="text-[13px] px-3 py-1.5 rounded-lg font-semibold" style={{ backgroundColor: 'rgba(139,92,246,0.15)', color: '#a78bfa', border: '1px solid rgba(139,92,246,0.3)', fontFamily: 'system-ui, -apple-system, sans-serif' }}>SETUP</span>
       </div>
-      <div className="flex items-center gap-3 text-[15px]">
+      <div className="flex items-center gap-3 text-[15px]" style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}>
         {steps.map((s, i) => (
           <React.Fragment key={s.id}>
             <span className={`px-5 py-2.5 rounded-xl font-medium transition-all ${
@@ -673,6 +695,17 @@ const SetupNav: React.FC<{ step: Screen }> = ({ step }) => {
         <span className="w-2 h-2 rounded-full bg-[#8b5cf6]" />
         <span>Obsidian Kernel</span>
         <div className="w-9 h-9 rounded-full flex items-center justify-center font-bold text-[14px]" style={{ backgroundColor: '#62259b', color: '#e9ddff', fontFamily: 'system-ui, -apple-system, sans-serif' }}>V</div>
+        <div className="flex items-center ml-2 border-l border-white/10 pl-2" style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}>
+          <button onClick={() => void minimizeWindow()} title="Minimize" className="p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-white/10 transition-colors">
+            <Minus className="w-4 h-4" />
+          </button>
+          <button onClick={() => void toggleMaximizeWindow()} title="Maximize" className="p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-white/10 transition-colors">
+            <Square className="w-3.5 h-3.5" />
+          </button>
+          <button onClick={() => void closeWindow()} title="Close" className="p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-red-500/80 transition-colors">
+            <X className="w-4 h-4" />
+          </button>
+        </div>
       </div>
     </header>
   );
@@ -1386,6 +1419,12 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) =>
   const finish = () => {
     updateSettings({ defaultSearchEngine: searchEngine });
     localStorage.setItem('vesper_onboarding_done', '1');
+    useBrowserStore.setState({
+      tabs: [],
+      activeTabId: '',
+      splitTabId: null,
+      recentlyClosedTabs: [],
+    });
     createTab('vesper://newtab');
     onComplete();
   };

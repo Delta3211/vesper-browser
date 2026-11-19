@@ -40,6 +40,7 @@ export const App: React.FC = () => {
   } = useBrowserStore();
 
   useEffect(() => {
+    if (showOnboarding) return;
     const finish = () => ensureActiveTab();
     const persistApi = (useBrowserStore as typeof useBrowserStore & {
       persist?: { onFinishHydration?: (cb: () => void) => () => void; hasHydrated?: () => boolean };
@@ -48,7 +49,7 @@ export const App: React.FC = () => {
     const unsub = persistApi?.onFinishHydration?.(finish);
     if (hydrated) finish();
     return () => { unsub?.(); };
-  }, [hydrated, ensureActiveTab]);
+  }, [hydrated, ensureActiveTab, showOnboarding]);
 
   useEffect(() => {
     const reopenSetup = () => setShowOnboarding(true);
@@ -186,14 +187,22 @@ export const App: React.FC = () => {
     activeTabId, activePane, splitTabId,
   ]);
 
+  if (showOnboarding) {
+    return (
+      <div
+        className="vesper-app fixed inset-0 overflow-hidden bg-[#0b0c10]"
+        style={{ fontFamily: "'Plus Jakarta Sans', -apple-system, sans-serif" }}
+      >
+        <OnboardingFlow onComplete={() => setShowOnboarding(false)} />
+      </div>
+    );
+  }
+
   return (
     <div
       className="vesper-app"
       style={{ fontFamily: "'Plus Jakarta Sans', -apple-system, sans-serif" }}
     >
-      {showOnboarding && (
-        <OnboardingFlow onComplete={() => setShowOnboarding(false)} />
-      )}
       <WindowFrame />
       <Sidebar />
 

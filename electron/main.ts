@@ -246,6 +246,12 @@ function createWindow() {
 
   mainWindow.once('ready-to-show', () => {
     mainWindow?.show();
+    if (process.argv.includes('--setup') || process.argv.includes('--fresh') || process.argv.includes('--reset')) {
+      mainWindow?.webContents.executeJavaScript(`
+        localStorage.removeItem('vesper_onboarding_done');
+        window.dispatchEvent(new Event('vesper:run-setup'));
+      `).catch(() => {});
+    }
   });
 
   mainWindow.on('closed', () => {
