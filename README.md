@@ -1,9 +1,12 @@
 # Vesper Browser
 
-[![Download for Windows](https://img.shields.io/badge/Download-Windows%20(.exe)-8b5cf6?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/Delta3211/vesper-browser/releases/latest/download/Vesper.exe)
+[![Download Windows Installer](https://img.shields.io/badge/Download-Installer%20(.exe)-8b5cf6?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/Delta3211/vesper-browser/releases/latest/download/Vesper-Setup-0.2.0.exe)
+[![Download Portable EXE](https://img.shields.io/badge/Download-Portable%20(.exe)-3b82f6?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/Delta3211/vesper-browser/releases/latest/download/Vesper.exe)
 [![Latest Release](https://img.shields.io/github/v/release/Delta3211/vesper-browser?style=for-the-badge&color=22c55e)](https://github.com/Delta3211/vesper-browser/releases/latest)
 
-> **Direct Download**: No terminal or installation commands needed! Click the badge above to download **`Vesper.exe`** directly and run the native desktop application.
+> 🚀 **Direct Download (No Terminal Needed!)**:
+> - **[Click here to download Vesper Installer (Setup .exe)](https://github.com/Delta3211/vesper-browser/releases/latest/download/Vesper-Setup-0.2.0.exe)** — standard 1-click Windows installer (creates desktop & start menu shortcuts).
+> - **[Click here to download Vesper Portable (.exe)](https://github.com/Delta3211/vesper-browser/releases/latest/download/Vesper.exe)** — standalone executable (run directly without installing).
 
 ---
 
