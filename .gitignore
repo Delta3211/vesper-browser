@@ -1,0 +1,49 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Rust Tauri
+src-tauri/target
+target/
+
+# Local tools, generated builds, and workstation artifacts
+.agents/
+.claude/
+.obsidian_*
+.oxlintrc.json
+dist-electron/
+release/
+images/
+monster_output/
+skills_vault/
+ui-ux-pro-max-skill/
+workspaces/
+Vesper.exe
+*.fig
+thumbnail*.png
+vesper_*.txt
+download_monitor.bat
+pull_models.ps1
+pull_phi4.ps1
+obsidian_*.mjs
