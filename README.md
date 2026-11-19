@@ -1,5 +1,12 @@
 # Vesper Browser
 
+[![Download for Windows](https://img.shields.io/badge/Download-Windows%20(.exe)-8b5cf6?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/Delta3211/vesper-browser/releases/latest/download/Vesper.exe)
+[![Latest Release](https://img.shields.io/github/v/release/Delta3211/vesper-browser?style=for-the-badge&color=22c55e)](https://github.com/Delta3211/vesper-browser/releases/latest)
+
+> **Direct Download**: No terminal or installation commands needed! Click the badge above to download **`Vesper.exe`** directly and run the native desktop application.
+
+---
+
 A minimalist, privacy-focused browser interface built with React, TypeScript, and Tailwind CSS.
 
 ## Features
