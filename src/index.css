@@ -169,6 +169,27 @@ html, body, #root {
 .animate-wiggle        { animation: wiggle 400ms ease both; }
 .animate-spin-smooth   { animation: spin 800ms linear infinite; }
 
+/* ── Viewport Animated Micro-Interactions ── */
+@keyframes floatSlow {
+  0%, 100% { transform: translateY(0px); }
+  50%      { transform: translateY(-6px); }
+}
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.35; transform: scale(1); }
+  50%      { opacity: 0.75; transform: scale(1.08); }
+}
+@keyframes fadeInSlideUp {
+  0%   { opacity: 0; transform: translateY(14px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.animate-float             { animation: floatSlow 5s ease-in-out infinite; }
+.animate-pulse-glow        { animation: pulseGlow 4s ease-in-out infinite; }
+.animate-entrance          { animation: fadeInSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.animate-entrance-delay-1  { animation: fadeInSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both; }
+.animate-entrance-delay-2  { animation: fadeInSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both; }
+.animate-entrance-delay-3  { animation: fadeInSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both; }
+
 /* Stagger children */
 .stagger-children > *:nth-child(1)  { animation-delay: 0ms;   }
 .stagger-children > *:nth-child(2)  { animation-delay: 40ms;  }

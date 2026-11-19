@@ -1,14 +1,36 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Search, Globe } from 'lucide-react';
+import { Search, Shield, Globe, ArrowUp } from 'lucide-react';
 import { useBrowserStore } from '../../store/browserStore';
 
-export const NewTabPage: React.FC<{ tabId: string }> = ({ tabId }) => {
+interface NewTabPageProps {
+  tabId: string;
+}
+
+export const NewTabPage: React.FC<NewTabPageProps> = ({ tabId }) => {
   const [query, setQuery] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
-  const { navigateTab, settings, pinnedApps, bookmarks, history } = useBrowserStore();
+  const { navigateTab, settings, pinnedApps, setSettingsModalOpen } = useBrowserStore();
 
   useEffect(() => {
-    setTimeout(() => inputRef.current?.focus(), 50);
+    const focusTimer = setTimeout(() => inputRef.current?.focus(), 80);
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (
+        e.key === '/' &&
+        document.activeElement !== inputRef.current &&
+        !(document.activeElement instanceof HTMLInputElement) &&
+        !(document.activeElement instanceof HTMLTextAreaElement)
+      ) {
+        e.preventDefault();
+        inputRef.current?.focus();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      clearTimeout(focusTimer);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
   }, []);
 
   const handleSearch = (e: React.FormEvent) => {
@@ -17,182 +39,154 @@ export const NewTabPage: React.FC<{ tabId: string }> = ({ tabId }) => {
     navigateTab(tabId, query);
   };
 
-  // Quick links — from pinned apps or defaults
-  const quickLinks = pinnedApps.length > 0
+  const engineName =
+    settings.defaultSearchEngine === 'google'
+      ? 'Google'
+      : settings.defaultSearchEngine === 'brave'
+      ? 'Brave'
+      : 'DuckDuckGo';
+
+  // Quick links from pinned apps or defaults
+  const shortcuts = pinnedApps.length > 0
     ? pinnedApps.slice(0, 6)
     : [
-        { id: '1', name: 'Google',  url: 'https://google.com',         domain: 'google.com' },
-        { id: '2', name: 'YouTube', url: 'https://youtube.com',        domain: 'youtube.com' },
-        { id: '3', name: 'GitHub',  url: 'https://github.com',         domain: 'github.com' },
-        { id: '4', name: 'Reading', url: 'vesper://bookmarks/reading', domain: '' },
+        { id: 'pin-google', name: 'Google',  url: 'https://google.com',         domain: 'google.com' },
+        { id: 'pin-yt',     name: 'YouTube', url: 'https://youtube.com',        domain: 'youtube.com' },
+        { id: 'pin-github', name: 'GitHub',  url: 'https://github.com',         domain: 'github.com' },
+        { id: 'pin-gmail',  name: 'Gmail',   url: 'https://mail.google.com',    domain: 'mail.google.com' },
       ];
+
+  const hasInput = query.trim().length > 0;
 
   return (
     <div
-      className="w-full h-full flex flex-col items-center justify-center select-none overflow-hidden relative animate-fade-in"
-      style={{ backgroundColor: '#0b0c10' }}
+      className="w-full h-full flex flex-col items-center justify-center px-4 overflow-hidden relative select-none"
+      style={{ backgroundColor: '#131419' }}
+      data-purpose="new-tab-content"
     >
-      {/* Ambient glow */}
-      <div
-        className="pointer-events-none absolute"
-        style={{
-          top: '50%', left: '50%',
-          transform: 'translate(-50%, -60%)',
-          width: 520, height: 340,
-          borderRadius: '50%',
-          background: 'rgba(104,7,186,0.08)',
-          filter: 'blur(130px)',
-        }}
-      />
+      {/* Ambient Glow Behind Logo */}
+      <div className="absolute w-72 h-72 rounded-full bg-purple-600/15 blur-3xl pointer-events-none animate-pulse-glow -translate-y-28" />
 
-      <div className="relative z-10 w-full max-w-2xl flex flex-col items-center gap-8 px-4">
-
-        {/* Icon + Title */}
-        <div className="flex flex-col items-center gap-3 text-center animate-bounce-in">
-          <div
-            className="w-14 h-14 rounded-2xl flex items-center justify-center"
-            style={{ backgroundColor: '#13111a', boxShadow: '0 8px 32px rgba(107,7,186,0.5)' }}
-          >
-            <img src="./vesper-logo.png" alt="Vesper" className="w-14 h-14 rounded-2xl" />
+      {/* Main Central Container */}
+      <div className="relative z-10 w-full max-w-[560px] flex flex-col items-center">
+        
+        {/* Minimalist Slate Ribbon V Logo with soft floating effect */}
+        <div className="mb-8 flex items-center justify-center relative animate-entrance">
+          <div className="w-20 h-20 rounded-[24px] overflow-hidden bg-gradient-to-b from-[#1c1c24] to-[#121318] shadow-[0_8px_30px_rgba(0,0,0,0.5),0_0_30px_rgba(147,51,234,0.18)] border border-white/10 flex items-center justify-center p-2.5 transition-all duration-300 hover:shadow-[0_8px_35px_rgba(147,51,234,0.3)] hover:scale-105 animate-float cursor-default">
+            <img
+              alt="Vesper Ribbon Logo"
+              className="w-full h-full object-contain filter drop-shadow-[0_2px_8px_rgba(0,0,0,0.4)]"
+              src="./vesper-logo.png"
+            />
           </div>
-          <h1 className="font-semibold tracking-tight" style={{ fontSize: 28, color: '#f1eff5', letterSpacing: '-0.02em' }}>
-            New Tab
-          </h1>
-          <p style={{ fontSize: 13, color: '#9c8188' }}>Search the web or type a URL</p>
         </div>
 
-        {/* Search bar — exact spec styling */}
-        <div className="w-full">
-          <form onSubmit={handleSearch}>
-            <div
-              className="relative flex items-center w-full transition-all"
-              style={{
-                height: 48,
-                backgroundColor: '#13151a',
-                border: '1px solid #2b2738',
-                borderRadius: 12,
-                boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
-              }}
-              onFocus={() => {}}
-            >
-              <Search
-                className="absolute left-4 shrink-0"
-                style={{ width: 20, height: 20, color: '#9c8188' }}
-              />
+        {/* Central Search Omnibox with fluid focus and typing reactions */}
+        <form onSubmit={handleSearch} className="w-full">
+          <div className="w-full bg-[#1a1b22]/95 border border-[#2a2c36] hover:border-purple-500/30 focus-within:!border-purple-500/80 focus-within:shadow-[0_0_30px_rgba(168,85,247,0.22)] rounded-2xl p-3.5 shadow-2xl transition-all duration-200 animate-entrance-delay-1 group backdrop-blur-md">
+            
+            {/* Search Input Row */}
+            <div className="flex items-center px-1.5 pb-2.5">
+              <Search className="w-4 h-4 text-gray-400 mr-2.5 shrink-0 transition-colors group-focus-within:text-purple-400" />
               <input
                 ref={inputRef}
                 type="text"
                 value={query}
-                onChange={e => setQuery(e.target.value)}
-                placeholder={`Search with ${settings.defaultSearchEngine === 'google' ? 'Google' : settings.defaultSearchEngine === 'brave' ? 'Brave' : 'DuckDuckGo'} or enter address...`}
-                className="w-full bg-transparent border-none outline-none px-3"
-                style={{
-                  paddingLeft: 48, paddingRight: 60,
-                  fontSize: 14, color: '#f1eff5',
-                  fontFamily: "'Plus Jakarta Sans', sans-serif",
-                }}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search anything or enter URL..."
+                className="w-full bg-transparent text-sm text-gray-100 placeholder-gray-400 focus:outline-none border-none p-0 focus:ring-0 font-normal selection:bg-purple-600 selection:text-white"
                 spellCheck={false}
                 autoComplete="off"
-                onFocus={e => {
-                  const parent = e.target.closest('div') as HTMLElement;
-                  if (parent) {
-                    parent.style.borderColor = '#8b5cf6';
-                    parent.style.boxShadow = '0 0 0 1px #8b5cf6, 0 0 16px rgba(139,92,246,0.25)';
-                  }
-                }}
-                onBlur={e => {
-                  const parent = e.target.closest('div') as HTMLElement;
-                  if (parent) {
-                    parent.style.borderColor = '#2b2738';
-                    parent.style.boxShadow = '0 8px 32px rgba(0,0,0,0.4)';
-                  }
-                }}
               />
-              <div
-                className="absolute right-3 flex items-center justify-center rounded"
-                style={{
-                  height: 24, minWidth: 44,
-                  backgroundColor: '#181a1f',
-                  border: '1px solid #333538',
-                  color: '#9c8188',
-                  fontSize: 11,
-                  fontFamily: 'monospace',
-                  paddingLeft: 8, paddingRight: 8,
-                }}
-              >
-                Enter
-              </div>
+              <kbd className="text-[10px] text-gray-500 bg-[#272932] px-1.5 py-0.5 rounded border border-white/5 opacity-60 group-focus-within:opacity-0 transition-opacity font-mono">
+                /
+              </kbd>
             </div>
-          </form>
+
+            {/* Bottom Action Row inside Omnibox */}
+            <div className="flex items-center justify-between pt-2.5 border-t border-[#262832]">
+              <div className="flex items-center space-x-2 text-[11px] text-gray-400 font-normal">
+                <span className="flex items-center space-x-1.5 bg-white/5 px-2 py-0.5 rounded-full border border-white/5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                  <span className="text-gray-300">Encrypted search</span>
+                </span>
+                <span className="text-[10px] text-gray-500 font-mono">
+                  via {engineName}
+                </span>
+              </div>
+              <button
+                type="submit"
+                title="Submit Search (Enter)"
+                className={`w-7 h-7 rounded-lg flex items-center justify-center transition-all duration-150 active:scale-95 cursor-pointer ${
+                  hasInput
+                    ? 'bg-purple-600 text-white shadow-[0_0_12px_rgba(168,85,247,0.5)] hover:bg-purple-500'
+                    : 'bg-[#272932] text-gray-400 hover:text-white hover:bg-purple-600'
+                }`}
+              >
+                <ArrowUp className="w-3.5 h-3.5 transition-transform group-hover:translate-y-[-1px]" />
+              </button>
+            </div>
+          </div>
+        </form>
+
+        {/* Headline, Subheadline & Shimmer Privacy Badge directly below Omnibox */}
+        <div className="text-center mt-7 max-w-lg animate-entrance-delay-2 flex flex-col items-center">
+          <h1 className="text-[19px] font-semibold text-white tracking-normal leading-snug">
+            Browse privately. No tracking. No telemetry.<br />
+            100% encrypted.
+          </h1>
+          <p className="text-[12px] text-gray-400 mt-2 font-normal">
+            Your data stays on your device. Always private by design.
+          </p>
+
+          {/* Interactive Privacy Shield Indicator Pill */}
+          <button
+            type="button"
+            onClick={() => setSettingsModalOpen(true)}
+            className="mt-4 inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-[#1e1c28]/80 border border-purple-500/20 hover:border-purple-400/50 shadow-sm transition-all cursor-pointer group hover:bg-[#252233]"
+            title="Open Privacy Settings"
+          >
+            <Shield className="w-3.5 h-3.5 text-purple-400 group-hover:scale-110 transition-transform" />
+            <span className="text-[11px] font-medium text-purple-200 group-hover:text-white transition-colors">
+              Zero telemetry active
+            </span>
+            <span className="text-[10px] text-purple-400/80 font-mono">AES-256</span>
+          </button>
         </div>
 
-        {/* Quick links grid */}
-        <div className="flex items-center justify-center gap-6 pt-2 stagger-children flex-wrap">
-          {[...quickLinks, ...bookmarks.slice(0, 4).map(b => ({ id: b.id, name: b.title, url: b.url, domain: (() => { try { return new URL(b.url).hostname; } catch { return ''; } })() }))].filter((link, i, arr) => arr.findIndex(x => x.url === link.url) === i).slice(0, 8).map(link => (
-            <button
-              key={link.id}
-              onClick={() => navigateTab(tabId, link.url)}
-              className="quick-link animate-fade-in flex flex-col items-center gap-2 group cursor-pointer"
-            >
-              <div
-                className="w-12 h-12 rounded-xl flex items-center justify-center transition-all"
-                style={{
-                  backgroundColor: '#181a1f',
-                  border: '1px solid #2b2738',
-                }}
-                onMouseEnter={e => {
-                  (e.currentTarget as HTMLElement).style.backgroundColor = '#1c1a24';
-                  (e.currentTarget as HTMLElement).style.borderColor = '#3b3252';
-                }}
-                onMouseLeave={e => {
-                  (e.currentTarget as HTMLElement).style.backgroundColor = '#181a1f';
-                  (e.currentTarget as HTMLElement).style.borderColor = '#2b2738';
-                }}
+        {/* Quick Launch Pinned Shortcuts */}
+        {shortcuts.length > 0 && (
+          <div className="mt-8 flex items-center justify-center gap-3 animate-entrance-delay-3 flex-wrap">
+            {shortcuts.map((shortcut) => (
+              <button
+                key={shortcut.id}
+                type="button"
+                onClick={() => navigateTab(tabId, shortcut.url)}
+                className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#1a1b22]/70 hover:bg-[#23242e] border border-white/5 hover:border-purple-500/30 transition-all duration-200 group shadow-sm hover:scale-[1.02] active:scale-95 cursor-pointer"
+                title={`Open ${shortcut.name}`}
               >
-                {link.domain ? (
+                {shortcut.domain ? (
                   <img
-                    src={`https://www.google.com/s2/favicons?domain=${link.domain}&sz=32`}
-                    alt={link.name}
-                    className="w-6 h-6 object-contain"
-                    onError={e => {
+                    src={`https://www.google.com/s2/favicons?domain=${shortcut.domain}&sz=32`}
+                    alt={shortcut.name}
+                    className="w-4 h-4 object-contain opacity-80 group-hover:opacity-100 transition-opacity"
+                    onError={(e) => {
                       (e.target as HTMLImageElement).style.display = 'none';
-                      (e.target as HTMLImageElement).nextElementSibling?.removeAttribute('style');
                     }}
                   />
                 ) : (
-                  <Globe className="w-5 h-5" style={{ color: '#dbb8ff' }} />
+                  <Globe className="w-4 h-4 text-purple-300" />
                 )}
-              </div>
-              <span
-                className="text-center transition-colors group-hover:text-white"
-                style={{ fontSize: 12, color: '#9c8188', fontWeight: 500 }}
-              >
-                {link.name}
-              </span>
-            </button>
-          ))}
-        </div>
-
-        {history.length > 0 && (
-          <div className="w-full max-w-xl pt-2">
-            <p className="text-[11px] uppercase tracking-wider mb-2" style={{ color: '#6e6880' }}>Recently visited</p>
-            <div className="space-y-1">
-              {history.slice(0, 5).map(item => (
-                <button
-                  key={item.id}
-                  onClick={() => navigateTab(tabId, item.url)}
-                  className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-left"
-                  style={{ backgroundColor: '#13151a', border: '1px solid #1e1a2b' }}
-                >
-                  {item.favicon && <img src={item.favicon} alt="" className="w-4 h-4" />}
-                  <span className="text-xs truncate flex-1" style={{ color: '#e2dfe8' }}>{item.title}</span>
-                  <span className="text-[10px] font-mono truncate max-w-[180px]" style={{ color: '#6e6880' }}>{item.url.replace(/^https?:\/\//, '')}</span>
-                </button>
-              ))}
-            </div>
+                <span className="text-xs text-gray-300 group-hover:text-white font-medium transition-colors">
+                  {shortcut.name}
+                </span>
+              </button>
+            ))}
           </div>
         )}
       </div>
     </div>
   );
 };
+
+export default NewTabPage;
