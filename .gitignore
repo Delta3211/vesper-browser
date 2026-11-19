@@ -31,6 +31,7 @@ target/
 .agents/
 .claude/
 .obsidian_*
+.monster_*
 .oxlintrc.json
 dist-electron/
 release/
@@ -47,3 +48,6 @@ download_monitor.bat
 pull_models.ps1
 pull_phi4.ps1
 obsidian_*.mjs
+monster_*.mjs
+debug.log
+meta.json
