@@ -27,37 +27,44 @@ export const Sidebar: React.FC = () => {
     <aside className="w-[240px] min-w-[240px] max-w-[240px] flex-shrink-0 bg-[#16141f] border-r border-[#242131] flex flex-col justify-between p-3 select-none z-40 h-full">
       {/* ── TOP SECTION ── */}
       <div className="flex flex-col min-h-0 flex-1">
-        {/* Header: Vesper logo monogram + chevron dropdown */}
-        <div className="flex items-center justify-between px-1 pt-0.5 pb-1">
+        {/* Header: Vesper Gray Monogram + Chevron Dropdown */}
+        <div className="flex items-center justify-between px-1 pt-1 pb-1.5">
           <div className="flex items-center gap-2.5">
-            <div className="w-6 h-6 rounded-md bg-[#252033] border border-white/10 flex items-center justify-center p-0.5 shadow-sm">
+            <div className="w-8 h-8 rounded-xl bg-[#20212a] border border-white/10 flex items-center justify-center p-1.5 shadow-md transition-transform duration-200 hover:scale-105">
               <img
-                src="/vesper-logo.svg"
+                src="/vesper-slate-logo.png"
                 alt="Vesper"
-                className="w-4 h-4 object-contain"
+                className="w-full h-full object-contain filter drop-shadow-[0_1px_4px_rgba(0,0,0,0.5)]"
                 onError={(e) => {
-                  (e.target as HTMLImageElement).src = './vesper-logo.png';
+                  (e.target as HTMLImageElement).src = './vesper-logo-gray.svg';
                 }}
               />
             </div>
-            <span className="font-semibold text-sm tracking-tight text-white">Vesper</span>
+            <div className="flex flex-col">
+              <span className="font-semibold text-[14.5px] tracking-tight text-white leading-none">
+                Vesper
+              </span>
+              <span className="text-[10px] text-neutral-400 font-mono tracking-wide mt-0.5">
+                v0.2.0
+              </span>
+            </div>
           </div>
           <button
             type="button"
-            className="p-1 text-neutral-400 hover:text-white rounded hover:bg-white/5 transition-colors cursor-pointer"
+            className="p-1.5 text-neutral-400 hover:text-white rounded-lg hover:bg-white/5 transition-colors cursor-pointer"
             title="Workspace menu"
           >
             <ChevronDown className="w-3.5 h-3.5" />
           </button>
         </div>
 
-        {/* Pinned App Grid: 2 columns, containing Gmail and Google icons in rounded square tiles */}
+        {/* Pinned App Grid: 2 columns, rounded tiles */}
         <div className="grid grid-cols-2 gap-2 my-3">
           {/* Gmail */}
           <button
             type="button"
             onClick={() => createTab('https://mail.google.com', activeWorkspaceId)}
-            className="bg-[#201d2d] hover:bg-[#2a263c] h-10 flex items-center justify-center rounded-lg transition-all duration-200 group shadow-sm hover:scale-[1.02] active:scale-95 cursor-pointer border border-white/5"
+            className="bg-[#201d2d] hover:bg-[#2a263c] h-11 flex items-center justify-center rounded-xl transition-all duration-200 group shadow-sm hover:scale-[1.02] active:scale-95 cursor-pointer border border-white/5"
             title="Open Gmail"
           >
             <svg className="w-5 h-5 transition-transform duration-200 group-hover:scale-110" viewBox="0 0 24 24">
@@ -72,7 +79,7 @@ export const Sidebar: React.FC = () => {
           <button
             type="button"
             onClick={() => createTab('https://google.com', activeWorkspaceId)}
-            className="bg-[#201d2d] hover:bg-[#2a263c] h-10 flex items-center justify-center rounded-lg transition-all duration-200 group shadow-sm hover:scale-[1.02] active:scale-95 cursor-pointer border border-white/5"
+            className="bg-[#201d2d] hover:bg-[#2a263c] h-11 flex items-center justify-center rounded-xl transition-all duration-200 group shadow-sm hover:scale-[1.02] active:scale-95 cursor-pointer border border-white/5"
             title="Open Google"
           >
             <svg className="w-5 h-5 transition-transform duration-200 group-hover:scale-110" viewBox="0 0 24 24">
@@ -84,18 +91,20 @@ export const Sidebar: React.FC = () => {
           </button>
         </div>
 
-        {/* Tab List Section: + New tab button */}
+        {/* Tab List Section: Larger, High-Quality + New Tab Pill */}
         <button
           type="button"
           onClick={() => createTab('vesper://newtab', activeWorkspaceId)}
-          className="w-full flex items-center gap-2 py-2 px-2.5 rounded-lg text-neutral-300 hover:text-white hover:bg-[#201d2d] transition-all text-sm mb-2 group cursor-pointer border border-transparent hover:border-white/5 active:scale-[0.99]"
+          className="w-full min-h-[42px] py-2.5 px-3.5 rounded-xl text-neutral-200 hover:text-white bg-[#201d2d]/90 hover:bg-[#28233a] border border-white/5 hover:border-purple-500/20 shadow-sm transition-all duration-150 flex items-center gap-2.5 mb-2.5 cursor-pointer group active:scale-[0.99]"
         >
-          <Plus className="w-4 h-4 text-neutral-400 group-hover:text-purple-300 transition-colors" />
-          <span className="font-medium">New tab</span>
+          <div className="w-5 h-5 rounded-md bg-white/5 flex items-center justify-center group-hover:bg-purple-600/30 transition-colors">
+            <Plus className="w-3.5 h-3.5 text-neutral-300 group-hover:text-purple-300 transition-colors" />
+          </div>
+          <span className="font-medium text-[13.5px]">New tab</span>
         </button>
 
-        {/* Scrollable Tabs */}
-        <div className="flex-1 overflow-y-auto space-y-1 pr-0.5" style={{ scrollbarWidth: 'none' }}>
+        {/* Scrollable Tabs: Substantially Bigger, High Quality Pills */}
+        <div className="flex-1 overflow-y-auto space-y-1.5 pr-0.5" style={{ scrollbarWidth: 'none' }}>
           {currentTabs.map((tab) => {
             const isActive = tab.id === activeTabId;
             const isNewTab = tab.url.startsWith('vesper://newtab');
@@ -112,28 +121,33 @@ export const Sidebar: React.FC = () => {
               <div
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`group px-3 py-2 rounded-lg flex items-center gap-2.5 text-sm cursor-pointer transition-all border ${
+                className={`group min-h-[44px] py-2.5 px-3.5 rounded-xl flex items-center gap-3 cursor-pointer transition-all duration-150 border ${
                   isActive
-                    ? 'bg-[#2a243e] text-white font-medium border-white/10 shadow-sm'
-                    : 'text-neutral-400 hover:text-white hover:bg-[#201d2d] border-transparent font-normal'
+                    ? 'bg-[#2a243e] text-white font-medium border-white/15 shadow-[0_4px_16px_rgba(0,0,0,0.35),0_0_12px_rgba(168,85,247,0.18)]'
+                    : 'text-neutral-300 hover:text-white bg-[#1b1926]/50 hover:bg-[#221e30] border-transparent hover:border-white/5 font-normal'
                 }`}
               >
+                {/* Favicon or Globe */}
                 {tab.favicon && !isNewTab ? (
                   <img
                     src={tab.favicon}
                     alt=""
-                    className="w-4 h-4 rounded shrink-0 object-contain"
+                    className="w-4.5 h-4.5 rounded-md shrink-0 object-contain"
                     onError={(e) => {
                       (e.target as HTMLElement).style.display = 'none';
                     }}
                   />
                 ) : (
-                  <Globe className={`w-4 h-4 shrink-0 ${isActive ? 'text-purple-300' : 'text-neutral-400'}`} />
+                  <Globe className={`w-4.5 h-4.5 shrink-0 ${isActive ? 'text-purple-300' : 'text-neutral-400'}`} />
                 )}
 
-                <span className="truncate flex-1 text-[13px]">{displayTitle}</span>
+                {/* Title */}
+                <span className="truncate flex-1 text-[13.5px] leading-snug">
+                  {displayTitle}
+                </span>
 
-                <div className="flex items-center gap-1 shrink-0">
+                {/* Right controls: Mute, Close, Active indicator */}
+                <div className="flex items-center gap-1.5 shrink-0">
                   {tab.isMuted && (
                     <button
                       type="button"
@@ -144,20 +158,27 @@ export const Sidebar: React.FC = () => {
                       className="text-amber-400 hover:text-amber-300 p-0.5"
                       title="Unmute tab"
                     >
-                      <VolumeX className="w-3 h-3" />
+                      <VolumeX className="w-3.5 h-3.5" />
                     </button>
                   )}
+
+                  {/* Close Tab Button */}
                   <button
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
                       closeTab(tab.id);
                     }}
-                    className="opacity-0 group-hover:opacity-100 p-0.5 rounded text-neutral-400 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
+                    className="opacity-0 group-hover:opacity-100 p-1 rounded-md text-neutral-400 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
                     title="Close tab"
                   >
-                    <X className="w-3 h-3" />
+                    <X className="w-3.5 h-3.5" />
                   </button>
+
+                  {/* Active Indicator Pip */}
+                  {isActive && (
+                    <span className="w-1.5 h-1.5 rounded-full bg-purple-400 shadow-[0_0_8px_rgba(168,85,247,0.9)] shrink-0" />
+                  )}
                 </div>
               </div>
             );
@@ -165,33 +186,33 @@ export const Sidebar: React.FC = () => {
         </div>
       </div>
 
-      {/* ── BOTTOM SECTION ── */}
-      <div className="pt-2 border-t border-[#242131] space-y-1 flex-shrink-0">
-        {/* Downloads Trigger */}
+      {/* ── BOTTOM SECTION: Generous, Premium Pills ── */}
+      <div className="pt-2.5 border-t border-[#242131] space-y-1.5 flex-shrink-0">
+        {/* Downloads Trigger Pill */}
         <button
           type="button"
           onClick={() => setDownloadsDrawerOpen(!downloadsDrawerOpen)}
-          className="w-full bg-[#242136] hover:bg-[#2d2843] px-3 py-2 rounded-lg flex items-center justify-between text-sm cursor-pointer transition-all border border-white/5 group active:scale-[0.99]"
+          className="w-full min-h-[42px] bg-[#242136] hover:bg-[#2d2843] px-3.5 py-2.5 rounded-xl flex items-center justify-between text-sm cursor-pointer transition-all border border-white/5 group shadow-sm active:scale-[0.99]"
           title="Downloads (Ctrl+J)"
         >
           <div className="flex items-center gap-2.5 text-neutral-200 group-hover:text-white">
             <Download className="w-4 h-4 text-neutral-400 group-hover:text-purple-300 transition-colors" />
-            <span className="font-medium text-[13px]">Downloads</span>
+            <span className="font-medium text-[13.5px]">Downloads</span>
           </div>
-          <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-white/10 text-neutral-300 font-mono">
+          <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-white/10 text-neutral-200 font-mono">
             {activeDownloadsCount}
           </span>
         </button>
 
-        {/* Settings Shortcut */}
+        {/* Settings Shortcut Pill */}
         <button
           type="button"
           onClick={() => setSettingsModalOpen(true)}
-          className="w-full hover:bg-[#201d2d] px-3 py-2 rounded-lg flex items-center gap-2.5 text-sm text-neutral-400 hover:text-white transition-all cursor-pointer group active:scale-[0.99]"
+          className="w-full min-h-[40px] hover:bg-[#201d2d] px-3.5 py-2.5 rounded-xl flex items-center gap-2.5 text-sm text-neutral-400 hover:text-white transition-all cursor-pointer group active:scale-[0.99]"
           title="Settings (Ctrl+,)"
         >
           <Settings className="w-4 h-4 text-neutral-400 group-hover:text-purple-300 transition-colors" />
-          <span className="font-normal text-[13px]">Settings</span>
+          <span className="font-normal text-[13.5px]">Settings</span>
         </button>
       </div>
     </aside>

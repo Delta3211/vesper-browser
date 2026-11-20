@@ -46,14 +46,14 @@ export const NewTabPage: React.FC<NewTabPageProps> = ({ tabId }) => {
     >
       {/* Central Stack */}
       <div className="w-full max-w-[540px] flex flex-col items-center">
-        {/* Logo: Centered rounded-2xl slate-purple container holding the Vesper SVG monogram */}
-        <div className="w-16 h-16 bg-[#1a1826] border border-[#2c2740] rounded-2xl flex items-center justify-center shadow-2xl mb-6 cursor-default transition-all duration-300 hover:scale-105">
+        {/* Main Big Logo: Minimal Slate Ribbon Gray V Icon */}
+        <div className="w-24 h-24 rounded-3xl bg-gradient-to-b from-[#20222a] to-[#13141a] border border-white/10 shadow-[0_12px_40px_rgba(0,0,0,0.6),0_0_25px_rgba(255,255,255,0.06)] flex items-center justify-center p-3.5 mb-7 cursor-default transition-all duration-300 hover:scale-105 hover:shadow-[0_16px_45px_rgba(0,0,0,0.7),0_0_30px_rgba(255,255,255,0.1)] group">
           <img
-            src="/vesper-logo.svg"
+            src="/vesper-slate-logo.png"
             alt="Vesper"
-            className="w-10 h-10 object-contain drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]"
+            className="w-full h-full object-contain filter drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)] transition-transform duration-300 group-hover:scale-105"
             onError={(e) => {
-              (e.target as HTMLImageElement).src = './vesper-logo.png';
+              (e.target as HTMLImageElement).src = './vesper-logo-gray.svg';
             }}
           />
         </div>

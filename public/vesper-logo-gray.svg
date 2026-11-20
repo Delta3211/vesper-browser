@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="bgGradGray" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e1f26"/>
+      <stop offset="100%" stop-color="#121318"/>
+    </linearGradient>
+    <linearGradient id="vGradGray" x1="0%" y1="0%" x2="100%" y2="80%">
+      <stop offset="0%" stop-color="#f1f5f9"/>
+      <stop offset="40%" stop-color="#cbd5e1"/>
+      <stop offset="70%" stop-color="#94a3b8"/>
+      <stop offset="100%" stop-color="#64748b"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="100" height="100" rx="22" ry="22" fill="url(#bgGradGray)"/>
+
+  <path d="
+    M 18 22
+    L 26 22
+    C 27 22 28 23 28.5 24
+    L 50 65
+    L 71.5 24
+    C 72 23 73 22 74 22
+    L 82 22
+    C 84 22 85 24.5 84 26
+    L 55 76
+    C 54 78 52 79 50 79
+    C 48 79 46 78 45 76
+    L 16 26
+    C 15 24.5 16 22 18 22
+    Z
+  " fill="url(#vGradGray)"/>
+
+  <path d="
+    M 29 26
+    L 50 68
+    L 71 26
+    L 76 26
+    L 50 73
+    L 24 26
+    Z
+  " fill="url(#bgGradGray)" opacity="0.6"/>
+</svg>
