@@ -190,7 +190,7 @@ export const App: React.FC = () => {
   if (showOnboarding) {
     return (
       <div
-        className="vesper-app fixed inset-0 overflow-hidden bg-[#0b0c10]"
+        className="vesper-app fixed inset-0 overflow-hidden bg-[#1c1d22]"
         style={{ fontFamily: "'Plus Jakarta Sans', -apple-system, sans-serif" }}
       >
         <OnboardingFlow onComplete={() => setShowOnboarding(false)} />
@@ -200,22 +200,22 @@ export const App: React.FC = () => {
 
   return (
     <div
-      className="w-screen h-screen overflow-hidden flex flex-row bg-[#111317] select-none font-sans text-neutral-200"
+      className="w-screen h-screen overflow-hidden flex flex-row bg-[#1c1d22] select-none font-sans text-neutral-200"
       style={{ fontFamily: "'Plus Jakarta Sans', -apple-system, sans-serif" }}
     >
-      {/* 1. Sidebar (Left Rail) */}
+      {/* 1. Left Rail Sidebar (stays dark aubergine / slate purple) */}
       <Sidebar />
 
-      {/* Main Area: Top Bar + Viewport + Overlays */}
-      <div className="flex-1 flex flex-col h-full overflow-hidden relative min-w-0">
+      {/* Main Area: Top Bar + Viewport (Gray Background) */}
+      <div className="flex-1 flex flex-col h-full overflow-hidden relative min-w-0 bg-[#1c1d22]">
         {/* 2. Top Window Chrome / Omnibox */}
         <WindowFrame />
 
-        {/* 4. Active Downloads Popover / Flyout (Pixel-Anchored) */}
+        {/* 4. Active Downloads Popover / Flyout */}
         <DownloadsDrawer />
 
-        {/* 3. Main Central Viewport */}
-        <main className="flex-1 w-full h-full relative overflow-hidden bg-[#111317]">
+        {/* 3. Main Central Viewport (Gray Background) */}
+        <main className="flex-1 w-full h-full relative overflow-hidden bg-[#1c1d22]">
           <EngineViewport />
           <FindInPage />
         </main>

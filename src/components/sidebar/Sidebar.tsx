@@ -24,34 +24,34 @@ export const Sidebar: React.FC = () => {
   if (sidebarCollapsed) return null;
 
   return (
-    <aside className="w-[240px] min-w-[240px] max-w-[240px] flex-shrink-0 bg-[#16141f] border-r border-[#242131] flex flex-col justify-between p-3 select-none z-40 h-full">
+    <aside className="w-[252px] min-w-[252px] max-w-[252px] flex-shrink-0 bg-[#16141f] border-r border-[#262137] flex flex-col justify-between p-3 pt-3.5 select-none z-40 h-full">
       {/* ── TOP SECTION ── */}
       <div className="flex flex-col min-h-0 flex-1">
-        {/* Header: Vesper Gray Monogram + Chevron Dropdown */}
-        <div className="flex items-center justify-between px-1 pt-1 pb-1.5">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-[#20212a] border border-white/10 flex items-center justify-center p-1.5 shadow-md transition-transform duration-200 hover:scale-105">
+        {/* Header: Vesper Actual Grey Monogram + Chevron Dropdown */}
+        <div className="flex items-center justify-between px-1 pb-2">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="w-7 h-7 rounded-lg bg-[#252033] border border-white/10 flex items-center justify-center p-1 shadow-sm shrink-0">
               <img
-                src="/vesper-slate-logo.png"
+                src="/vesper-gray-sidebar.png"
                 alt="Vesper"
-                className="w-full h-full object-contain filter drop-shadow-[0_1px_4px_rgba(0,0,0,0.5)]"
+                className="w-full h-full object-contain"
                 onError={(e) => {
-                  (e.target as HTMLImageElement).src = './vesper-logo-gray.svg';
+                  (e.target as HTMLImageElement).src = './vesper-slate-logo.png';
                 }}
               />
             </div>
-            <div className="flex flex-col">
-              <span className="font-semibold text-[14.5px] tracking-tight text-white leading-none">
+            <div className="flex flex-col min-w-0">
+              <span className="font-semibold text-[14px] tracking-tight text-white leading-tight truncate">
                 Vesper
               </span>
-              <span className="text-[10px] text-neutral-400 font-mono tracking-wide mt-0.5">
+              <span className="text-[10px] text-neutral-400 font-mono tracking-wide leading-tight">
                 v0.2.0
               </span>
             </div>
           </div>
           <button
             type="button"
-            className="p-1.5 text-neutral-400 hover:text-white rounded-lg hover:bg-white/5 transition-colors cursor-pointer"
+            className="p-1.5 text-neutral-400 hover:text-white rounded-lg hover:bg-white/5 transition-colors cursor-pointer shrink-0"
             title="Workspace menu"
           >
             <ChevronDown className="w-3.5 h-3.5" />
@@ -59,12 +59,12 @@ export const Sidebar: React.FC = () => {
         </div>
 
         {/* Pinned App Grid: 2 columns, rounded tiles */}
-        <div className="grid grid-cols-2 gap-2 my-3">
+        <div className="grid grid-cols-2 gap-2 my-2.5">
           {/* Gmail */}
           <button
             type="button"
             onClick={() => createTab('https://mail.google.com', activeWorkspaceId)}
-            className="bg-[#201d2d] hover:bg-[#2a263c] h-11 flex items-center justify-center rounded-xl transition-all duration-200 group shadow-sm hover:scale-[1.02] active:scale-95 cursor-pointer border border-white/5"
+            className="bg-[#201d2d] hover:bg-[#2a263c] h-10 flex items-center justify-center rounded-xl transition-all duration-200 group shadow-sm hover:scale-[1.02] active:scale-95 cursor-pointer border border-white/5"
             title="Open Gmail"
           >
             <svg className="w-5 h-5 transition-transform duration-200 group-hover:scale-110" viewBox="0 0 24 24">
@@ -79,7 +79,7 @@ export const Sidebar: React.FC = () => {
           <button
             type="button"
             onClick={() => createTab('https://google.com', activeWorkspaceId)}
-            className="bg-[#201d2d] hover:bg-[#2a263c] h-11 flex items-center justify-center rounded-xl transition-all duration-200 group shadow-sm hover:scale-[1.02] active:scale-95 cursor-pointer border border-white/5"
+            className="bg-[#201d2d] hover:bg-[#2a263c] h-10 flex items-center justify-center rounded-xl transition-all duration-200 group shadow-sm hover:scale-[1.02] active:scale-95 cursor-pointer border border-white/5"
             title="Open Google"
           >
             <svg className="w-5 h-5 transition-transform duration-200 group-hover:scale-110" viewBox="0 0 24 24">
@@ -91,19 +91,19 @@ export const Sidebar: React.FC = () => {
           </button>
         </div>
 
-        {/* Tab List Section: Larger, High-Quality + New Tab Pill */}
+        {/* Tab List Section: Generous + New Tab Pill */}
         <button
           type="button"
           onClick={() => createTab('vesper://newtab', activeWorkspaceId)}
-          className="w-full min-h-[42px] py-2.5 px-3.5 rounded-xl text-neutral-200 hover:text-white bg-[#201d2d]/90 hover:bg-[#28233a] border border-white/5 hover:border-purple-500/20 shadow-sm transition-all duration-150 flex items-center gap-2.5 mb-2.5 cursor-pointer group active:scale-[0.99]"
+          className="w-full min-h-[42px] py-2 px-3 rounded-xl text-neutral-200 hover:text-white bg-[#201d2d]/90 hover:bg-[#28233a] border border-white/5 hover:border-purple-500/20 shadow-sm transition-all duration-150 flex items-center gap-2.5 mb-2 cursor-pointer group active:scale-[0.99]"
         >
-          <div className="w-5 h-5 rounded-md bg-white/5 flex items-center justify-center group-hover:bg-purple-600/30 transition-colors">
+          <div className="w-5 h-5 rounded-md bg-white/5 flex items-center justify-center group-hover:bg-purple-600/30 transition-colors shrink-0">
             <Plus className="w-3.5 h-3.5 text-neutral-300 group-hover:text-purple-300 transition-colors" />
           </div>
-          <span className="font-medium text-[13.5px]">New tab</span>
+          <span className="font-medium text-[13px]">New tab</span>
         </button>
 
-        {/* Scrollable Tabs: Substantially Bigger, High Quality Pills */}
+        {/* Scrollable Tabs: Generous, Well-Proportioned Pills (Not Cut Off) */}
         <div className="flex-1 overflow-y-auto space-y-1.5 pr-0.5" style={{ scrollbarWidth: 'none' }}>
           {currentTabs.map((tab) => {
             const isActive = tab.id === activeTabId;
@@ -121,7 +121,7 @@ export const Sidebar: React.FC = () => {
               <div
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`group min-h-[44px] py-2.5 px-3.5 rounded-xl flex items-center gap-3 cursor-pointer transition-all duration-150 border ${
+                className={`group min-h-[42px] py-2 px-3 rounded-xl flex items-center gap-2.5 cursor-pointer transition-all duration-150 border ${
                   isActive
                     ? 'bg-[#2a243e] text-white font-medium border-white/15 shadow-[0_4px_16px_rgba(0,0,0,0.35),0_0_12px_rgba(168,85,247,0.18)]'
                     : 'text-neutral-300 hover:text-white bg-[#1b1926]/50 hover:bg-[#221e30] border-transparent hover:border-white/5 font-normal'
@@ -132,22 +132,22 @@ export const Sidebar: React.FC = () => {
                   <img
                     src={tab.favicon}
                     alt=""
-                    className="w-4.5 h-4.5 rounded-md shrink-0 object-contain"
+                    className="w-4 h-4 rounded shrink-0 object-contain"
                     onError={(e) => {
                       (e.target as HTMLElement).style.display = 'none';
                     }}
                   />
                 ) : (
-                  <Globe className={`w-4.5 h-4.5 shrink-0 ${isActive ? 'text-purple-300' : 'text-neutral-400'}`} />
+                  <Globe className={`w-4 h-4 shrink-0 ${isActive ? 'text-purple-300' : 'text-neutral-400'}`} />
                 )}
 
-                {/* Title */}
-                <span className="truncate flex-1 text-[13.5px] leading-snug">
+                {/* Title with min-w-0 for reliable truncation */}
+                <span className="truncate min-w-0 flex-1 text-[13px] leading-snug">
                   {displayTitle}
                 </span>
 
                 {/* Right controls: Mute, Close, Active indicator */}
-                <div className="flex items-center gap-1.5 shrink-0">
+                <div className="flex items-center gap-1 shrink-0 ml-auto">
                   {tab.isMuted && (
                     <button
                       type="button"
@@ -158,7 +158,7 @@ export const Sidebar: React.FC = () => {
                       className="text-amber-400 hover:text-amber-300 p-0.5"
                       title="Unmute tab"
                     >
-                      <VolumeX className="w-3.5 h-3.5" />
+                      <VolumeX className="w-3 h-3" />
                     </button>
                   )}
 
@@ -172,7 +172,7 @@ export const Sidebar: React.FC = () => {
                     className="opacity-0 group-hover:opacity-100 p-1 rounded-md text-neutral-400 hover:text-white hover:bg-white/10 transition-all cursor-pointer"
                     title="Close tab"
                   >
-                    <X className="w-3.5 h-3.5" />
+                    <X className="w-3 h-3" />
                   </button>
 
                   {/* Active Indicator Pip */}
@@ -187,17 +187,17 @@ export const Sidebar: React.FC = () => {
       </div>
 
       {/* ── BOTTOM SECTION: Generous, Premium Pills ── */}
-      <div className="pt-2.5 border-t border-[#242131] space-y-1.5 flex-shrink-0">
+      <div className="pt-2 border-t border-[#242131] space-y-1.5 flex-shrink-0">
         {/* Downloads Trigger Pill */}
         <button
           type="button"
           onClick={() => setDownloadsDrawerOpen(!downloadsDrawerOpen)}
-          className="w-full min-h-[42px] bg-[#242136] hover:bg-[#2d2843] px-3.5 py-2.5 rounded-xl flex items-center justify-between text-sm cursor-pointer transition-all border border-white/5 group shadow-sm active:scale-[0.99]"
+          className="w-full min-h-[42px] bg-[#242136] hover:bg-[#2d2843] px-3.5 py-2 rounded-xl flex items-center justify-between text-sm cursor-pointer transition-all border border-white/5 group shadow-sm active:scale-[0.99]"
           title="Downloads (Ctrl+J)"
         >
           <div className="flex items-center gap-2.5 text-neutral-200 group-hover:text-white">
             <Download className="w-4 h-4 text-neutral-400 group-hover:text-purple-300 transition-colors" />
-            <span className="font-medium text-[13.5px]">Downloads</span>
+            <span className="font-medium text-[13px]">Downloads</span>
           </div>
           <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-white/10 text-neutral-200 font-mono">
             {activeDownloadsCount}
@@ -208,11 +208,11 @@ export const Sidebar: React.FC = () => {
         <button
           type="button"
           onClick={() => setSettingsModalOpen(true)}
-          className="w-full min-h-[40px] hover:bg-[#201d2d] px-3.5 py-2.5 rounded-xl flex items-center gap-2.5 text-sm text-neutral-400 hover:text-white transition-all cursor-pointer group active:scale-[0.99]"
+          className="w-full min-h-[40px] hover:bg-[#201d2d] px-3.5 py-2 rounded-xl flex items-center gap-2.5 text-sm text-neutral-400 hover:text-white transition-all cursor-pointer group active:scale-[0.99]"
           title="Settings (Ctrl+,)"
         >
           <Settings className="w-4 h-4 text-neutral-400 group-hover:text-purple-300 transition-colors" />
-          <span className="font-normal text-[13.5px]">Settings</span>
+          <span className="font-normal text-[13px]">Settings</span>
         </button>
       </div>
     </aside>

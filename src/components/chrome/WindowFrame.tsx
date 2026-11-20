@@ -140,7 +140,7 @@ export const WindowFrame: React.FC = () => {
 
   return (
     <header
-      className="h-11 min-h-[44px] max-h-[44px] bg-[#111317] border-b border-[#1f2128] flex items-center justify-between px-3 gap-3 relative z-30 select-none text-neutral-200"
+      className="h-11 min-h-[44px] max-h-[44px] bg-[#1c1d22] border-b border-[#262832] flex items-center justify-between px-3 gap-3 relative z-30 select-none text-neutral-200"
       style={{ WebkitAppRegion: 'drag' } as React.CSSProperties}
     >
       {/* ── Left Navigation Controls ── */}

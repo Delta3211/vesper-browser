@@ -41,21 +41,23 @@ export const NewTabPage: React.FC<NewTabPageProps> = ({ tabId }) => {
 
   return (
     <div
-      className="flex-1 h-full bg-[#111317] flex flex-col items-center justify-center p-6 relative overflow-y-auto select-none"
+      className="flex-1 h-full bg-[#1c1d22] flex flex-col items-center justify-center p-6 relative overflow-y-auto select-none"
       data-purpose="new-tab-content"
     >
       {/* Central Stack */}
       <div className="w-full max-w-[540px] flex flex-col items-center">
-        {/* Main Big Logo: Minimal Slate Ribbon Gray V Icon */}
-        <div className="w-24 h-24 rounded-3xl bg-gradient-to-b from-[#20222a] to-[#13141a] border border-white/10 shadow-[0_12px_40px_rgba(0,0,0,0.6),0_0_25px_rgba(255,255,255,0.06)] flex items-center justify-center p-3.5 mb-7 cursor-default transition-all duration-300 hover:scale-105 hover:shadow-[0_16px_45px_rgba(0,0,0,0.7),0_0_30px_rgba(255,255,255,0.1)] group">
-          <img
-            src="/vesper-slate-logo.png"
-            alt="Vesper"
-            className="w-full h-full object-contain filter drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)] transition-transform duration-300 group-hover:scale-105"
-            onError={(e) => {
-              (e.target as HTMLImageElement).src = './vesper-logo-gray.svg';
-            }}
-          />
+        {/* Main Big Hero Logo: Exact Grey V Logo from Specification */}
+        <div className="mb-8 flex items-center justify-center relative">
+          <div className="w-20 h-20 rounded-[24px] overflow-hidden bg-gradient-to-b from-[#1c1c24] to-[#121318] shadow-[0_8px_30px_rgba(0,0,0,0.5),0_0_30px_rgba(147,51,234,0.18)] border border-white/10 flex items-center justify-center p-2.5 transition-all duration-300 hover:shadow-[0_8px_35px_rgba(147,51,234,0.3)] hover:scale-105 cursor-default">
+            <img
+              src="/vesper-gray-hero.png"
+              alt="Vesper Ribbon Logo"
+              className="w-full h-full object-contain filter drop-shadow-[0_2px_8px_rgba(0,0,0,0.4)]"
+              onError={(e) => {
+                (e.target as HTMLImageElement).src = './vesper-slate-logo.png';
+              }}
+            />
+          </div>
         </div>
 
         {/* Search Bar */}

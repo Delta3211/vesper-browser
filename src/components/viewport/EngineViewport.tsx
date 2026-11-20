@@ -45,7 +45,7 @@ export const EngineViewport: React.FC = () => {
 
   if (!leftTab) {
     return (
-      <div className="w-full h-full flex items-center justify-center" style={{ backgroundColor: '#0b0c10', color: '#6e6880', fontFamily: 'monospace', fontSize: 12 }}>
+      <div className="w-full h-full flex items-center justify-center" style={{ backgroundColor: '#1c1d22', color: '#6e6880', fontFamily: 'monospace', fontSize: 12 }}>
         No active tab
       </div>
     );
@@ -55,7 +55,7 @@ export const EngineViewport: React.FC = () => {
     <div
       ref={containerRef}
       className={`w-full h-full flex relative overflow-hidden ${isDragging ? 'cursor-col-resize select-none' : ''}`}
-      style={{ backgroundColor: '#0b0c10' }}
+      style={{ backgroundColor: '#1c1d22' }}
     >
       <div
         key={`${leftTab.id}:${leftTab.url.startsWith('vesper://') ? 'i' : 'w'}`}
