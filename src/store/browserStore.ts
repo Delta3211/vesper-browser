@@ -545,7 +545,7 @@ export const useBrowserStore = create<BrowserStore>()(
           useBrowserStore.setState({ hydrated: true });
           return;
         }
-        const onboardingDone = typeof window !== 'undefined' && localStorage.getItem('vesper_onboarding_done');
+        const onboardingDone = typeof window !== 'undefined' && localStorage.getItem('vesper_setup_v0.2.0_completed');
         if (!onboardingDone || !state.settings.restoreTabsOnStartup) {
           state.tabs = [];
           state.activeTabId = '';

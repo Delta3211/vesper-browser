@@ -1418,6 +1418,7 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) =>
 
   const finish = () => {
     updateSettings({ defaultSearchEngine: searchEngine });
+    localStorage.setItem('vesper_setup_v0.2.0_completed', '1');
     localStorage.setItem('vesper_onboarding_done', '1');
     useBrowserStore.setState({
       tabs: [],

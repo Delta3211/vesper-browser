@@ -21,7 +21,7 @@ import { adjustZoom, openDevTools, resetZoom } from './lib/webviewRegistry';
 export const App: React.FC = () => {
   const [shortcutsModalOpen, setShortcutsModalOpen] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(
-    () => !localStorage.getItem('vesper_onboarding_done')
+    () => !localStorage.getItem('vesper_setup_v0.2.0_completed')
   );
   const {
     tabs, createTab, ensureActiveTab, hydrated,

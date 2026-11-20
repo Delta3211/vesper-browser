@@ -41,13 +41,13 @@ export const NewTabPage: React.FC<NewTabPageProps> = ({ tabId }) => {
 
   return (
     <div
-      className="flex-1 h-full bg-[#1c1d22] flex flex-col items-center justify-center p-6 relative overflow-y-auto select-none"
+      className="flex-1 h-full bg-[#1c1d22] flex flex-col items-center justify-center p-8 relative overflow-y-auto select-none"
       data-purpose="new-tab-content"
     >
-      {/* Central Stack */}
-      <div className="w-full max-w-[540px] flex flex-col items-center">
+      {/* Central Stack with generous breathing room */}
+      <div className="w-full max-w-[560px] flex flex-col items-center">
         {/* Main Big Hero Logo: Exact Grey V Logo from Specification */}
-        <div className="mb-8 flex items-center justify-center relative">
+        <div className="mb-10 flex items-center justify-center relative">
           <div className="w-20 h-20 rounded-[24px] overflow-hidden bg-gradient-to-b from-[#1c1c24] to-[#121318] shadow-[0_8px_30px_rgba(0,0,0,0.5),0_0_30px_rgba(147,51,234,0.18)] border border-white/10 flex items-center justify-center p-2.5 transition-all duration-300 hover:shadow-[0_8px_35px_rgba(147,51,234,0.3)] hover:scale-105 cursor-default">
             <img
               src="/vesper-gray-hero.png"
@@ -60,23 +60,23 @@ export const NewTabPage: React.FC<NewTabPageProps> = ({ tabId }) => {
           </div>
         </div>
 
-        {/* Search Bar */}
+        {/* Search Bar: Generous height and unhurried layout */}
         <form onSubmit={handleSearch} className="w-full">
-          <div className="w-full max-w-[540px] h-11 bg-[#16181f] border border-[#262933] focus-within:border-[#8b5cf6] rounded-xl flex items-center px-3.5 gap-3 shadow-lg transition-all">
+          <div className="w-full h-12 bg-[#16181f] border border-[#282a35] focus-within:border-[#8b5cf6] focus-within:shadow-[0_0_24px_rgba(139,92,246,0.2)] rounded-2xl flex items-center px-4 gap-3.5 shadow-xl transition-all">
             {/* Static Prefix Badge: Non-deletable pill with green active dot */}
-            <div className="bg-[#1f222b] text-neutral-300 text-[11px] px-2 py-1 rounded-md flex items-center gap-1.5 border border-[#2b2f3c] flex-shrink-0 select-none pointer-events-none">
+            <div className="bg-[#20222b] text-neutral-300 text-[11.5px] px-2.5 py-1 rounded-lg flex items-center gap-1.5 border border-[#2b2f3c] flex-shrink-0 select-none pointer-events-none">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
               <span>Encrypted search</span>
             </div>
 
-            {/* Input Field: Placeholder "Search anything or enter URL..." */}
+            {/* Input Field */}
             <input
               ref={inputRef}
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search anything or enter URL..."
-              className="flex-1 bg-transparent text-sm text-neutral-100 placeholder-neutral-500 focus:outline-none border-none p-0 focus:ring-0 font-normal selection:bg-purple-600 selection:text-white"
+              className="flex-1 bg-transparent text-[13.5px] text-neutral-100 placeholder-neutral-500 focus:outline-none border-none p-0 focus:ring-0 font-normal selection:bg-purple-600 selection:text-white"
               spellCheck={false}
               autoComplete="off"
             />
@@ -97,22 +97,22 @@ export const NewTabPage: React.FC<NewTabPageProps> = ({ tabId }) => {
           </div>
         </form>
 
-        {/* Typography Block */}
-        <div className="text-center mt-6 flex flex-col items-center">
-          <h1 className="text-xl font-semibold text-white tracking-tight mt-6 text-center leading-snug">
+        {/* Typography Block: Generous spacing below search bar */}
+        <div className="text-center mt-12 flex flex-col items-center">
+          <h1 className="text-[20px] font-semibold text-white tracking-tight text-center leading-relaxed">
             Browse privately. No tracking. No telemetry.<br />
             100% encrypted.
           </h1>
 
-          <p className="text-xs text-neutral-400 mt-1.5 text-center font-normal">
+          <p className="text-[13px] text-neutral-400 mt-3 text-center font-normal leading-normal">
             Your data stays on your device. Always private by design.
           </p>
 
-          {/* Privacy Pill */}
+          {/* Privacy Pill with dedicated space */}
           <button
             type="button"
             onClick={() => setSettingsModalOpen(true)}
-            className="mt-4 px-3 py-1 bg-[#16171d] border border-[#232630] rounded-full text-[11px] text-neutral-400 flex items-center gap-1.5 hover:border-purple-500/30 hover:text-neutral-200 transition-all cursor-pointer group"
+            className="mt-7 px-4 py-1.5 bg-[#16171d]/90 border border-[#262833] hover:border-purple-500/40 rounded-full text-[11.5px] text-neutral-400 hover:text-neutral-200 flex items-center gap-2 transition-all cursor-pointer group shadow-sm hover:scale-[1.02] active:scale-95"
             title="Privacy settings"
           >
             <Shield className="w-3.5 h-3.5 text-purple-400 group-hover:scale-110 transition-transform" />
