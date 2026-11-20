@@ -33,7 +33,7 @@ export const App: React.FC = () => {
     setFindInPageOpen, findInPageOpen,
     reloadTab, goBack, goForward, stopTab,
     activeTabId, activePane, splitTabId,
-    sidebarCollapsed, setIsOmnibarFocused,
+    setIsOmnibarFocused,
     addDownload, updateDownload, incrementShieldStats,
     shieldStats, updateSettings, settings,
     toggleBookmark,
@@ -200,29 +200,28 @@ export const App: React.FC = () => {
 
   return (
     <div
-      className="vesper-app"
+      className="w-screen h-screen overflow-hidden flex flex-row bg-[#111317] select-none font-sans text-neutral-200"
       style={{ fontFamily: "'Plus Jakarta Sans', -apple-system, sans-serif" }}
     >
-      <WindowFrame />
+      {/* 1. Sidebar (Left Rail) */}
       <Sidebar />
 
-      <main
-        className="fixed overflow-hidden"
-        style={{
-          top: 50,
-          left: sidebarCollapsed ? 0 : 248,
-          right: 0,
-          bottom: 0,
-          backgroundColor: '#0b0c10',
-          transition: 'left 0.2s ease',
-        }}
-      >
-        <EngineViewport />
-        <FindInPage />
-      </main>
+      {/* Main Area: Top Bar + Viewport + Overlays */}
+      <div className="flex-1 flex flex-col h-full overflow-hidden relative min-w-0">
+        {/* 2. Top Window Chrome / Omnibox */}
+        <WindowFrame />
+
+        {/* 4. Active Downloads Popover / Flyout (Pixel-Anchored) */}
+        <DownloadsDrawer />
+
+        {/* 3. Main Central Viewport */}
+        <main className="flex-1 w-full h-full relative overflow-hidden bg-[#111317]">
+          <EngineViewport />
+          <FindInPage />
+        </main>
+      </div>
 
       <CommandPalette />
-      <DownloadsDrawer />
       <SettingsModal />
       <ShortcutsModal
         isOpen={shortcutsModalOpen}
