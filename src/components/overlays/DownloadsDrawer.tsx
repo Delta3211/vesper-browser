@@ -1,9 +1,19 @@
-import React, { useEffect } from 'react';
+import React from 'react';
+import {
+  Download,
+  Folder,
+  X,
+  Play,
+  Pause,
+  Trash2,
+  CheckCircle2,
+  ExternalLink,
+} from 'lucide-react';
 import { useBrowserStore } from '../../store/browserStore';
 import { openInFileExplorer } from '../../lib/electronBridge';
 
 function formatBytes(bytes: number): string {
-  if (!bytes || bytes === 0) return '0 B';
+  if (bytes === 0) return '0 B';
   const k = 1024;
   const sizes = ['B', 'KB', 'MB', 'GB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -16,99 +26,56 @@ export const DownloadsDrawer: React.FC = () => {
     setDownloadsDrawerOpen,
     downloads,
     pauseDownload,
+    resumeDownload,
     cancelDownload,
     clearCompletedDownloads,
     settings,
   } = useBrowserStore();
 
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && downloadsDrawerOpen) {
-        setDownloadsDrawerOpen(false);
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [downloadsDrawerOpen, setDownloadsDrawerOpen]);
-
   if (!downloadsDrawerOpen) return null;
 
-  const openFolder = () => {
-    if (settings.downloadPath) {
-      void openInFileExplorer(settings.downloadPath);
-    }
-  };
-
-  const activeCount = downloads.length;
-
   return (
-    <>
-      {/* Click outside backdrop */}
+    <div
+      className="fixed inset-0 z-50 flex justify-end bg-black/40 backdrop-blur-xs no-drag animate-in fade-in duration-150"
+      onClick={() => setDownloadsDrawerOpen(false)}
+    >
       <div
-        className="fixed inset-0 z-40 bg-black/20"
-        onClick={() => setDownloadsDrawerOpen(false)}
-      />
-
-      {/* Floating Downloads Popover */}
-      <div
-        className="fixed top-12 right-6 w-[380px] bg-[#181920]/95 backdrop-blur-xl border border-purple-500/30 shadow-[0_20px_50px_rgba(0,0,0,0.7),0_0_30px_rgba(147,51,234,0.18)] rounded-2xl z-50 overflow-hidden flex flex-col animate-entrance select-none"
-        id="downloads-popover"
+        className="w-[380px] h-full bg-[#131316] border-l border-[#27272a] shadow-2xl flex flex-col text-zinc-200 animate-in slide-in-from-right duration-200"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
-        <div className="px-4 py-3 border-b border-white/5 flex items-center justify-between bg-white/[0.02]">
-          <div className="flex items-center space-x-2">
-            <span className="text-sm font-semibold text-white tracking-normal">Downloads</span>
-            <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-purple-600/20 text-purple-300 border border-purple-500/30">
-              {activeCount} {activeCount === 1 ? 'file' : 'files'}
+        {/* Drawer Header */}
+        <div className="p-4 border-b border-[#27272a] flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Download className="w-4 h-4 text-purple-400" />
+            <h2 className="text-sm font-semibold text-zinc-100">Downloads Hub</h2>
+            <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-400">
+              Ctrl+J
             </span>
           </div>
-          <div className="flex items-center space-x-2 text-xs text-gray-400">
-            <button
-              onClick={openFolder}
-              className="hover:text-purple-300 transition-colors flex items-center space-x-1 hover:underline cursor-pointer"
-              title="Open downloads directory"
-              type="button"
-            >
-              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" />
-              </svg>
-              <span>Folder</span>
-            </button>
-            <span className="opacity-30">•</span>
+
+          <div className="flex items-center gap-1">
             <button
               onClick={clearCompletedDownloads}
-              className="hover:text-gray-200 transition-colors cursor-pointer"
-              type="button"
+              title="Clear Completed"
+              className="p-1.5 rounded text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800 transition"
             >
-              Clear
+              <Trash2 className="w-3.5 h-3.5" />
             </button>
-            <span className="opacity-30">•</span>
             <button
-              id="btn-close-downloads"
               onClick={() => setDownloadsDrawerOpen(false)}
-              className="p-1 text-gray-400 hover:text-white rounded hover:bg-white/10 transition-colors cursor-pointer flex items-center justify-center"
-              title="Close Downloads"
-              type="button"
+              className="p-1.5 rounded text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800 transition"
             >
-              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path d="M6 18L18 6M6 6l12 12" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
-              </svg>
+              <X className="w-4 h-4" />
             </button>
           </div>
         </div>
 
-        {/* Content list */}
-        <div className="p-3 space-y-2.5 max-h-[380px] overflow-y-auto">
+        {/* Downloads List */}
+        <div className="flex-1 overflow-y-auto p-3 space-y-2.5">
           {downloads.length === 0 ? (
-            <div className="py-8 flex flex-col items-center justify-center text-center">
-              <div className="w-10 h-10 rounded-xl bg-purple-600/10 border border-purple-500/20 flex items-center justify-center text-purple-300 mb-2">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" />
-                </svg>
-              </div>
-              <p className="text-xs text-gray-300 font-medium">No recent downloads</p>
-              <p className="text-[11px] text-gray-500 mt-0.5">Files you download will appear here</p>
+            <div className="h-48 flex flex-col items-center justify-center text-zinc-500 font-mono text-xs text-center">
+              <Download className="w-8 h-8 text-zinc-700 mb-2" />
+              <span>No active or recent downloads</span>
             </div>
           ) : (
             downloads.map((item) => {
@@ -116,132 +83,107 @@ export const DownloadsDrawer: React.FC = () => {
                 100,
                 Math.round((item.receivedBytes / (item.totalBytes || 1)) * 100)
               );
-              const isProgressing = item.state === 'progressing';
-              const isZip = item.fileName.endsWith('.zip') || item.fileName.endsWith('.tar.gz');
-              const isPdf = item.fileName.endsWith('.pdf');
-
-              if (isProgressing) {
-                return (
-                  <div
-                    key={item.id}
-                    className="p-3 rounded-xl bg-[#20212b] border border-purple-500/30 shadow-inner group"
-                  >
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-center space-x-2.5 truncate">
-                        <div className="w-8 h-8 rounded-lg bg-purple-600/20 border border-purple-500/30 flex items-center justify-center shrink-0 text-purple-300">
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" />
-                          </svg>
-                        </div>
-                        <div className="truncate">
-                          <p className="text-[13px] font-medium text-white truncate leading-tight">
-                            {item.fileName}
-                          </p>
-                          <p className="text-[11px] text-purple-300 mt-0.5 font-normal">
-                            {formatBytes(item.receivedBytes)} / {formatBytes(item.totalBytes)} • {progress}%
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex items-center space-x-1 shrink-0 ml-2">
-                        <button
-                          onClick={() => pauseDownload(item.id)}
-                          className="p-1 text-gray-400 hover:text-white rounded hover:bg-white/10 transition-colors cursor-pointer"
-                          title="Pause"
-                          type="button"
-                        >
-                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path d="M10 9v6m4-6v6" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
-                          </svg>
-                        </button>
-                        <button
-                          onClick={() => cancelDownload(item.id)}
-                          className="p-1 text-gray-400 hover:text-white rounded hover:bg-white/10 transition-colors cursor-pointer"
-                          title="Cancel"
-                          type="button"
-                        >
-                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path d="M6 18L18 6M6 6l12 12" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
-                          </svg>
-                        </button>
-                      </div>
-                    </div>
-                    <div className="mt-2.5">
-                      <div className="w-full h-1.5 bg-[#14151b] rounded-full overflow-hidden">
-                        <div
-                          className="h-full bg-gradient-to-r from-purple-500 to-indigo-400 rounded-full transition-all duration-300"
-                          style={{ width: `${progress}%` }}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                );
-              }
+              const isDone = item.state === 'completed';
+              const isPaused = item.state === 'cancelled';
+              const isDownloading = item.state === 'progressing';
 
               return (
                 <div
                   key={item.id}
-                  className="p-2.5 rounded-xl hover:bg-white/[0.04] border border-transparent hover:border-white/5 transition-all flex items-center justify-between group"
+                  className="p-3 rounded-xl bg-[#1b1b1e] border border-[#27272a] space-y-2 text-xs"
                 >
-                  <div className="flex items-center space-x-2.5 truncate">
-                    <div
-                      className={`w-8 h-8 rounded-lg bg-white/5 border border-white/5 flex items-center justify-center shrink-0 ${
-                        isPdf ? 'text-red-400' : isZip ? 'text-amber-400' : 'text-purple-300'
-                      }`}
-                    >
-                      {isPdf ? (
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" />
-                        </svg>
-                      ) : isZip ? (
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" />
-                        </svg>
-                      ) : (
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" />
-                        </svg>
-                      )}
-                    </div>
-                    <div className="truncate">
-                      <p className="text-[13px] font-normal text-gray-200 group-hover:text-white truncate leading-tight">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0">
+                      <div className="font-medium text-zinc-100 truncate" title={item.fileName}>
                         {item.fileName}
-                      </p>
-                      <p className="text-[11px] text-gray-400 mt-0.5 font-normal">
-                        {formatBytes(item.totalBytes || item.receivedBytes)} • Completed
-                      </p>
+                      </div>
+                      <div className="text-[10px] text-zinc-500 font-mono mt-0.5 truncate">
+                        {item.savePath}
+                      </div>
                     </div>
+
+                    {isDone ? (
+                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                    ) : (
+                      <div className="flex items-center gap-1 shrink-0">
+                        {isDownloading && (
+                          <button
+                            onClick={() => pauseDownload(item.id)}
+                            title="Pause"
+                            className="p-1 rounded text-zinc-400 hover:text-white hover:bg-zinc-800"
+                          >
+                            <Pause className="w-3 h-3" />
+                          </button>
+                        )}
+                        {isPaused && (
+                          <button
+                            onClick={() => resumeDownload(item.id)}
+                            title="Resume"
+                            className="p-1 rounded text-purple-400 hover:text-purple-300 hover:bg-zinc-800"
+                          >
+                            <Play className="w-3 h-3" />
+                          </button>
+                        )}
+                        <button
+                          onClick={() => cancelDownload(item.id)}
+                          title="Cancel"
+                          className="p-1 rounded text-zinc-500 hover:text-rose-400 hover:bg-zinc-800"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      </div>
+                    )}
                   </div>
-                  {item.savePath && (
+
+                  {/* Progress Bar */}
+                  <div className="w-full h-1.5 rounded-full bg-zinc-800 overflow-hidden">
+                    <div
+                      className={`h-full transition-all duration-300 ${
+                        isDone
+                          ? 'bg-emerald-500'
+                          : isPaused
+                          ? 'bg-amber-500'
+                          : 'bg-purple-500 animate-pulse'
+                      }`}
+                      style={{ width: `${progress}%` }}
+                    />
+                  </div>
+
+                  {/* Stats and Action Footer */}
+                  <div className="flex items-center justify-between text-[10px] text-zinc-400 font-mono">
+                    <span>
+                      {formatBytes(item.receivedBytes)} / {formatBytes(item.totalBytes)} ({progress}%)
+                    </span>
+
+                    {/* Native Windows File Explorer Trigger */}
                     <button
-                      onClick={() => void openInFileExplorer(item.savePath)}
-                      className="opacity-0 group-hover:opacity-100 p-1.5 text-gray-400 hover:text-white rounded hover:bg-white/10 transition-all shrink-0 cursor-pointer"
-                      title="Show in folder"
-                      type="button"
+                      onClick={() => openInFileExplorer(item.savePath)}
+                      title="Open file location in Windows Explorer"
+                      className="flex items-center gap-1 text-purple-400 hover:text-purple-300 font-medium transition"
                     >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" />
-                      </svg>
+                      <Folder className="w-3 h-3" />
+                      <span>Show in folder</span>
                     </button>
-                  )}
+                  </div>
                 </div>
               );
             })
           )}
         </div>
 
-        {/* Security verified footer */}
-        <div className="px-4 py-2.5 border-t border-white/5 bg-white/[0.015] flex items-center justify-between text-[11px] text-gray-400">
-          <div className="flex items-center space-x-1.5 text-emerald-400">
-            <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
-            </svg>
-            <span className="text-gray-300 font-normal">Security verified</span>
-          </div>
-          <span className="text-[10px] text-gray-400 font-mono">Esc to dismiss</span>
+        {/* Drawer Bottom Rail */}
+        <div className="p-3 bg-[#0e0e11] border-t border-[#27272a] flex items-center justify-between text-[11px] text-zinc-500 font-mono">
+          <span className="truncate max-w-[220px]" title={settings.downloadPath}>
+            {settings.downloadPath || 'Default downloads folder'}
+          </span>
+          <button
+            onClick={() => openInFileExplorer(settings.downloadPath)}
+            className="text-zinc-400 hover:text-white flex items-center gap-1 transition"
+          >
+            Open Downloads <ExternalLink className="w-3 h-3" />
+          </button>
         </div>
       </div>
-    </>
+    </div>
   );
 };
-
-export default DownloadsDrawer;

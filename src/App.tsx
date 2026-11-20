@@ -209,11 +209,11 @@ export const App: React.FC = () => {
       <main
         className="fixed overflow-hidden"
         style={{
-          top: 40,
-          left: sidebarCollapsed ? 0 : 230,
+          top: 50,
+          left: sidebarCollapsed ? 0 : 248,
           right: 0,
           bottom: 0,
-          backgroundColor: '#1c1d22',
+          backgroundColor: '#0b0c10',
           transition: 'left 0.2s ease',
         }}
       >

@@ -31,7 +31,7 @@ function VesperPage({ url, tabId }: { url: string; tabId: string }) {
 
 function DevModePlaceholder({ url, domain }: { url: string; domain: string }) {
   return (
-    <div className="w-full h-full flex flex-col items-center justify-center p-8 text-center" style={{ backgroundColor: '#1c1d22' }}>
+    <div className="w-full h-full flex flex-col items-center justify-center p-8 text-center" style={{ backgroundColor: '#0b0c10' }}>
       <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-4" style={{ backgroundColor: '#181a1f', border: '1px solid #2b2738' }}>
         <Globe className="w-7 h-7" style={{ color: '#8b5cf6' }} />
       </div>
